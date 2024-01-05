@@ -160,23 +160,21 @@ schema.fields = [
   },
 ];
 
-directusO2MRelation(
-  schema,
+schema.createO2MRelation(
   "messages_campaigns",
   "messages_templates",
   "messages_template",
 );
 
-directusO2MRelation(
-  schema,
+schema.createO2MRelation(
   "messages_records",
   "messages_campaigns",
   "messages_campaign",
 );
 
-directusM2MRelation(schema, "messages_campaigns", "directus_users", {
-  Collection2IsUUID: true,
-  createField2: false,
+schema.createM2MRelation("messages_campaigns", "directus_users", {
+  m2mFieldType2: "uuid",
+  field2: true,
 });
 
 // @ts-ignore
