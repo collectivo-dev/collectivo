@@ -17,12 +17,8 @@ import { createOrUpdateDirectusRole } from "./directusQueries";
 // A schema relates to a specific version of an extension
 // Non-breaking schemas will be skipped if there is a newer version
 // Migrations can be called before and after the schema is applied
-export function initSchema(
-  extension: string,
-  version: string,
-  options?: Partial<ExtensionSchemaOptions>,
-) {
-  return new ExtensionSchema(extension, version, options);
+export function initSchema(extension: string, version: string) {
+  return new ExtensionSchema(extension, version);
 }
 
 export interface ExtensionDependency {
@@ -30,15 +26,14 @@ export interface ExtensionDependency {
   version: string;
 }
 
-export interface ExtensionSchemaOptions {
-  breaking: boolean;
-  dependencies?: ExtensionDependency[];
+export interface CollectivoFlow extends NestedPartial<DirectusFlow<any>> {
+  collectivoEndpoint?: string;
 }
 
 export class ExtensionSchema {
   extension: string;
   version: string;
-  options: ExtensionSchemaOptions;
+  dependencies: ExtensionDependency[];
   run_before: () => Promise<void>;
   run_after: () => Promise<void>;
 
@@ -47,23 +42,14 @@ export class ExtensionSchema {
   relations: NestedPartial<DirectusRelation<any>>[];
   roles: NestedPartial<DirectusRole<any>>[];
   permissions: NestedPartial<DirectusPermission<any>>[];
-  flows: NestedPartial<DirectusFlow<any>>[];
+  flows: CollectivoFlow[];
   operations: NestedPartial<DirectusOperation<any>>[];
   translations: any[];
 
-  constructor(
-    extension: string,
-    version: string,
-    options?: Partial<ExtensionSchemaOptions>,
-  ) {
+  constructor(extension: string, version: string) {
     this.extension = extension;
     this.version = version;
-
-    this.options = {
-      breaking: false,
-      ...options,
-    };
-
+    this.dependencies = [];
     this.collections = [];
     this.fields = [];
     this.relations = [];
@@ -151,12 +137,12 @@ export class ExtensionSchema {
 export function combineSchemas(
   extension: string,
   version: string,
-  options: Partial<ExtensionSchemaOptions>,
   schemas: ExtensionSchema[],
 ) {
-  const combinedSchema = initSchema(extension, version, options);
+  const combinedSchema = initSchema(extension, version);
 
   for (const schema of schemas) {
+    combinedSchema.dependencies.push(...schema.dependencies);
     combinedSchema.collections.push(...schema.collections);
     combinedSchema.fields.push(...schema.fields);
     combinedSchema.roles.push(...schema.roles);
@@ -178,6 +164,8 @@ export function combineSchemas(
 interface directusM2MSettings {
   field1?: NestedPartial<DirectusField<any>>;
   field2?: NestedPartial<DirectusField<any>> | boolean;
+  relation1?: NestedPartial<DirectusRelation<any>>;
+  relation2?: NestedPartial<DirectusRelation<any>>;
   m2mFieldType1?: string;
   m2mFieldType2?: string;
 }
@@ -195,6 +183,9 @@ function createM2MRelation(
     settings?.field2 && typeof settings?.field2 !== "boolean"
       ? settings?.field2
       : {};
+
+  const relation1 = settings?.relation1 || {};
+  const relation2 = settings?.relation2 || {};
 
   const field1Name = settings?.field1?.field || collection2;
   const field2Name = field2 ? field2.field || collection1 : null;
@@ -253,26 +244,30 @@ function createM2MRelation(
     collection: m2mCollectionName,
     field: `${collection1}_id`,
     related_collection: collection1,
+    ...relation1,
     meta: {
       one_field: field1Name,
       sort_field: null,
       one_deselect_action: "nullify",
       junction_field: `${collection2}_id`,
+      ...relation1?.meta,
     },
-    schema: { on_delete: "SET NULL" },
+    schema: { on_delete: "SET NULL", ...relation1?.schema },
   });
 
   schema.relations.push({
     collection: m2mCollectionName,
     field: `${collection2}_id`,
     related_collection: collection2,
+    ...relation2,
     meta: {
       one_field: field2Name,
       sort_field: null,
       one_deselect_action: "nullify",
       junction_field: `${collection1}_id`,
+      ...relation2?.meta,
     },
-    schema: { on_delete: "SET NULL" },
+    schema: { on_delete: "SET NULL", ...relation2?.schema },
   });
 }
 

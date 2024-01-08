@@ -10,8 +10,6 @@ export function verifyCollectivoApiToken(event: any) {
   }
 
   if (headers["authorization"] !== useRuntimeConfig().apiToken) {
-    console.log("headers", headers);
-    console.log("config", useRuntimeConfig());
     throw createError({
       statusCode: 401,
       statusMessage: "Invalid token",

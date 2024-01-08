@@ -15,7 +15,7 @@ export default defineNitroPlugin(() => {
     name: "collectivo",
     version: pkg.version,
     schemas: [
-      combineSchemas("collectivo", "0.0.1", {}, [
+      combineSchemas("collectivo", "0.0.1", [
         m001_extensions,
         m002_settings,
         m003_tags,

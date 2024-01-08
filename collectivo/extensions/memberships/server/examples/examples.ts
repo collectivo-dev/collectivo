@@ -10,7 +10,7 @@ export default async function examples() {
   await directus.request(deleteItems("memberships_types", { limit: 1000 }));
 
   // Create some membership types
-  console.info("Creating memberships");
+  console.info("Creating membership types");
   const types = [["Active"], ["Investing"]];
   const type_ids = [];
 

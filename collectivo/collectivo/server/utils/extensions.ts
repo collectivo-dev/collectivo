@@ -8,6 +8,7 @@ export interface ExtensionConfig {
   version: string;
   description?: string;
   schemas?: ExtensionSchema[];
+
   examples?: () => Promise<void>; // Always relates to latest schema
 }
 

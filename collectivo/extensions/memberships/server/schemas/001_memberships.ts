@@ -2,6 +2,11 @@ const schema = initSchema("memberships", "0.0.1");
 
 export default schema;
 
+schema.dependencies = [
+  { extension: "collectivo", version: "0.0.1" },
+  { extension: "payments", version: "0.0.1" },
+];
+
 schema.collections = [
   {
     collection: "memberships",
@@ -237,6 +242,19 @@ schema.fields = [
       ],
     },
   },
+  {
+    collection: "memberships",
+    field: "memberhships_shares",
+    type: "integer",
+    meta: {
+      interface: "input",
+      width: "half",
+      translations: [
+        { language: "de-DE", translation: "Anteile" },
+        { language: "en-US", translation: "Shares" },
+      ],
+    },
+  },
 
   // Membership Types
   directusNameField("memberships_types"),
@@ -307,6 +325,24 @@ schema.relations = [
   },
 ];
 
+schema.flows = [
+  {
+    name: "memberships_shares_invoices",
+    icon: "receipt",
+    color: null,
+    description: null,
+    status: "active",
+    accountability: "all",
+    trigger: "event",
+    options: {
+      type: "filter",
+      scope: ["items.update", "items.create"],
+      collections: ["memberships"],
+    },
+    collectivoEndpoint: "/api/memberships/create-shares-invoice",
+  },
+];
+
 schema.permissions = [
   {
     collection: "memberships",
@@ -327,3 +363,48 @@ schema.permissions = [
     fields: ["*"],
   },
 ];
+
+// TODO: Make optional
+// Add a relation to the payments extension
+schema.fields.push(
+  ...[
+    {
+      collection: "memberships",
+      field: "memberships_invoices",
+      type: "alias",
+      meta: {
+        interface: "list-o2m",
+        special: ["o2m"],
+        width: "half",
+        translations: [
+          { language: "de-DE", translation: "Rechnungen" },
+          { language: "en-US", translation: "Invoices" },
+        ],
+      },
+    },
+    {
+      collection: "payments_invoices_out",
+      field: "memberships_membership",
+      type: "integer",
+      meta: {
+        hidden: true,
+      },
+    },
+  ],
+);
+
+schema.relations.push(
+  ...[
+    {
+      collection: "payments_invoices_out",
+      field: "memberships_membership",
+      related_collection: "memberships",
+      meta: {
+        one_field: "memberships_invoices",
+        sort_field: null,
+        one_deselect_action: "nullify",
+      },
+      schema: { on_delete: "SET NULL" },
+    },
+  ],
+);

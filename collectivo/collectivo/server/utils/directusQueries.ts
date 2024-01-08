@@ -318,7 +318,7 @@ export async function createOrUpdateDirectusPermission(
         permission.fields = [permission.fields];
       }
 
-      console.log(permissionDB.fields, permission.fields);
+      // console.log(permissionDB.fields, permission.fields);
 
       // @ts-ignore
       permission.fields = [

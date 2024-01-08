@@ -1,7 +1,7 @@
 {
-  "name": "@collectivo/memberships",
+  "name": "@collectivo/payments",
   "version": "0.1.0",
-  "description": "An extension of collectivo to manage memberships.",
+  "description": "An extension of collectivo to manage payments.",
   "type": "module",
   "license": "AGPL-3.0",
   "author": "Joël Foramitti",
@@ -19,8 +19,7 @@
     "lint:fix": "eslint --cache . --fix"
   },
   "dependencies": {
-    "@collectivo/collectivo": "workspace:*",
-    "@collectivo/memberships": "workspace:*"
+    "@collectivo/collectivo": "workspace:*"
   },
   "devDependencies": {
     "nuxt": "^3.9.0",

@@ -1,12 +1,30 @@
 import { createItem, readItems, updateItem } from "@directus/sdk";
 import ExtensionBaseMigration from "../schemas/001_extensions";
 import { ExtensionConfig } from "./extensions";
+import { ExtensionSchema } from "./schemas";
 
 // Run pending migrations for a set of extensions, based on db state
 export async function migrateAll(
   exts: ExtensionConfig[],
   createExampleData: boolean = false,
 ) {
+  // // TODO Order extensions by dependencies
+  // console.log(
+  //   "UNSORTED EXTENSIONS",
+  //   exts.map((m) => m.name),
+  // );
+  // exts.sort((a, b) => {
+  //   if (!a.schemas) return -1;
+  //   if (!b.schemas) return 1;
+  //   if (a.schemas.at(-1)?.dependencies?.includes(b.name)) return 1;
+  //   if (b.schemas.at(-1)?.dependencies?.includes(a.name)) return -1;
+  //   return 0;
+  // });
+  // console.log(
+  //   "SORTED EXTENSIONS",
+  //   exts.map((m) => m.name),
+  // );
+
   const extsDb = await getExtensionsFromDb();
 
   for (const ext of exts) {
@@ -20,6 +38,8 @@ export async function migrateAll(
       `Successful: Migrating schema of extension ${ext.name} to latest`,
     );
   }
+
+  console.log("CREATE EXAMPLE DATA", createExampleData);
 
   if (createExampleData) {
     for (const ext of exts) {
@@ -131,6 +151,8 @@ export async function migrateCustom(
   }
 
   try {
+    const extsDb = await getExtensionsFromDb();
+    // TODO checkSchemaDependencies(schema, extsDb);
     await schema.run_before();
     await schema.apply();
     await schema.run_after();
@@ -212,15 +234,15 @@ async function runMigrations(ext: ExtensionConfig, extsDb: any[], to?: string) {
   );
 
   if (migrationStateIndex < migrationTargetIndex) {
-    for (const migration of ext.schemas.slice(
+    for (const schema of ext.schemas.slice(
       migrationStateIndex + 1,
       migrationTargetIndex + 1,
     )) {
       try {
-        // TODO: checkDependencies(migration, extsDb);
-        await migration.run_before();
-        await migration.apply();
-        await migration.run_after();
+        // TODO checkSchemaDependencies(schema, extsDb);
+        await schema.run_before();
+        await schema.apply();
+        await schema.run_after();
         migrationStateIndex++;
 
         await directus.request(
@@ -231,7 +253,7 @@ async function runMigrations(ext: ExtensionConfig, extsDb: any[], to?: string) {
         );
       } catch (e) {
         logger.error(
-          `Error applying schema ${ext.schemas[migrationStateIndex].version} of ${ext.name}`,
+          `Error applying schema ${ext.schemas[migrationStateIndex]?.version} of ${ext.name}`,
         );
 
         throw e;
@@ -262,17 +284,20 @@ async function runMigrations(ext: ExtensionConfig, extsDb: any[], to?: string) {
 }
 
 // TODO: Dependency checking
-// function checkDependencies(
-//   migration: CollectivoMigration,
-//   extsDb: any[]
-// ): void {
-//   if (!migration.dependencies) return;
-//   for (const dep of migration.dependencies) {
-//     const depDb = extsDb.find((f) => f.name === dep.extensionName);
-//     if (!depDb || depDb.migration < dep.migrationId) {
-//       throw new Error(
-//         `Dependency not met: ${dep.extensionName} must be at migration ${dep.migrationId}`
-//       );
-//     }
-//   }
-// }
+function checkSchemaDependencies(schema: ExtensionSchema, extsDb: any[]): void {
+  console.log("CHECKING DEPENDENCIES", schema.dependencies);
+  console.log("CURRENT STATE", extsDb);
+  if (!schema.dependencies) return;
+
+  for (const dep of schema.dependencies) {
+    const depDb = extsDb.find((f) => f.name === dep.extension);
+
+    if (!depDb || depDb.schema_version < dep.version) {
+      throw new Error(
+        `Dependency not met: ${dep.extension} must be at migration ${dep.version}`,
+      );
+    }
+
+    console.log("DEPENDENCY MET", dep, dep.version, depDb.schema_version);
+  }
+}
