@@ -13,6 +13,7 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "test": "vitest run",
+    "postinstall": "nuxt prepare",
     "format": "prettier --cache --check .",
     "format:fix": "prettier --cache --check . --write",
     "lint": "eslint --cache .",
