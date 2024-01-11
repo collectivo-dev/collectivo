@@ -3,7 +3,7 @@ import VueDatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 
 defineProps({
-  modelValue: [String],
+  modelValue: [Date],
 });
 
 defineEmits(["update:modelValue"]);
@@ -30,7 +30,7 @@ const customPosition = () => ({ top: 55, left: 0 });
         }"
         :format="'yyyy-MM-dd'"
         @date-update="
-          (value: string) => {
+          (value: Date) => {
             $emit('update:modelValue', value);
           }
         "
