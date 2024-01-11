@@ -1,22 +1,24 @@
 <script setup lang="ts">
 import { DateTime } from "luxon";
+import {
+  getAllShiftOccurences,
+  type ShiftOccurence,
+} from "~/composables/shifts";
 
 const toast = useToast();
 setCollectivoTitle("Shift calendar");
 const from = ref(DateTime.now().startOf("day").toJSDate());
 const to = ref(DateTime.now().startOf("day").plus({ months: 1 }).toJSDate());
 
-const shifts: Ref<CollectivoShift[]> = ref([]);
+const shiftOccurrences: Ref<ShiftOccurence[]> = ref([]);
 
 async function updateShifts() {
-  console.log(from.value);
-
-  getShiftOccurences(
+  getAllShiftOccurences(
     DateTime.fromISO(from.value.toISOString()),
     DateTime.fromISO(to.value.toISOString()),
   )
     .then((input) => {
-      shifts.value = input;
+      shiftOccurrences.value = input;
     })
     .catch((error) => {
       toast.add({
@@ -43,8 +45,9 @@ watch(to, updateShifts);
   </CollectivoContainer>
   <CollectivoContainer>
     <ul>
-      <li v-for="shift in shifts" :key="shift.id">
-        {{ shift.shifts_name }} - {{ shift.shifts_from }}
+      <li v-for="(shiftOccurrence, index) in shiftOccurrences" :key="index">
+        {{ shiftOccurrence.shift.shifts_name }} - {{ shiftOccurrence.start }} -
+        {{ shiftOccurrence.end }}
       </li>
     </ul>
   </CollectivoContainer>

@@ -55,8 +55,15 @@ schema.fields = [
   {
     collection: "shifts_shifts",
     field: "shifts_from",
-    type: "date",
+    type: "dateTime",
     schema: { is_nullable: false },
+    meta: {},
+  },
+  {
+    collection: "shifts_shifts",
+    field: "shifts_to",
+    type: "dateTime",
+    schema: { is_nullable: true },
     meta: {},
   },
   {
@@ -65,12 +72,6 @@ schema.fields = [
     type: "integer",
     schema: { is_nullable: false },
     meta: { note: "In minutes" },
-  },
-  {
-    collection: "shifts_shifts",
-    field: "shifts_time",
-    type: "time",
-    schema: { is_nullable: false },
   },
   {
     collection: "shifts_shifts",

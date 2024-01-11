@@ -9,6 +9,8 @@ declare global {
     shifts_name: string;
     shifts_from: string;
     shifts_to: string;
+    shifts_duration: number;
+    shifts_repeats_every: number;
   }
 }
 

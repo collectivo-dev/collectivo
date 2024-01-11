@@ -21,7 +21,8 @@
   },
   "dependencies": {
     "@collectivo/collectivo": "workspace:*",
-    "luxon": "^3.4.4"
+    "luxon": "^3.4.4",
+    "rrule": "^2.8.1"
   },
   "devDependencies": {
     "@nuxt/devtools": "latest",
