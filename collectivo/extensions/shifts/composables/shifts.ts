@@ -1,18 +1,11 @@
 import { readItems } from "@directus/sdk";
-import type { CollectivoShift } from "~/index";
 import { DateTime } from "luxon";
 import { datetime, RRule } from "rrule";
 
-export interface ShiftOccurence {
-  shift: CollectivoShift;
-  start: DateTime;
-  end: DateTime;
-}
-
-export const getAllShiftOccurences = async (
+export const getAllShiftOccurrences = async (
   from: DateTime,
   to: DateTime,
-): Promise<ShiftOccurence[]> => {
+): Promise<ShiftOccurrence[]> => {
   const directus = useDirectus();
 
   const shifts: CollectivoShift[] = await directus.request(
@@ -36,14 +29,14 @@ export const getOccurrencesForShift = (
   shift: CollectivoShift,
   from: DateTime,
   to: DateTime,
-): ShiftOccurence[] => {
-  const dates: datetime[] = shiftToRRule(shift).between(
+): ShiftOccurrence[] => {
+  const dates: Date[] = shiftToRRule(shift).between(
     luxonDateTimeToRruleDatetime(from),
     luxonDateTimeToRruleDatetime(to),
     true,
   );
 
-  const shiftOccurrences: ShiftOccurence[] = [];
+  const shiftOccurrences: ShiftOccurrence[] = [];
 
   for (const date of dates) {
     const start = DateTime.fromJSDate(date);
@@ -51,7 +44,7 @@ export const getOccurrencesForShift = (
     shiftOccurrences.push({
       shift: shift,
       start: start,
-      end: start.plus({ minute: shift.duration }),
+      end: start.plus({ minute: shift.shifts_duration }),
     });
   }
 
@@ -69,9 +62,7 @@ export const shiftToRRule = (shift: CollectivoShift): RRule => {
   });
 };
 
-export const luxonDateTimeToRruleDatetime = (
-  luxonDateTime: DateTime,
-): datetime => {
+export const luxonDateTimeToRruleDatetime = (luxonDateTime: DateTime): Date => {
   return datetime(
     luxonDateTime.year,
     luxonDateTime.month,

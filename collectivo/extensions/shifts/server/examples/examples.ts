@@ -40,8 +40,8 @@ async function cleanShiftsData() {
 async function createShifts() {
   const directus = await useDirectusAdmin();
 
-  const monday = DateTime.now().toUTC().startOf("week");
-  const shiftsRequests = [];
+  const monday = DateTime.now().startOf("week");
+  const shiftsRequests: CollectivoShift[] = [];
 
   const nb_weeks = 3;
 
@@ -52,11 +52,10 @@ async function createShifts() {
       for (const time_of_day of times_of_day) {
         shiftsRequests.push({
           shifts_name: "Shop (week " + ["A", "B", "C", "D"][week] + ")",
-          shifts_from: day.toString(),
+          shifts_from: day.set({ hour: time_of_day }).toString(),
           shifts_duration:
             time_of_day == times_of_day[times_of_day.length - 1] ? 150 : 180,
           shifts_repeats_every: nb_weeks * 7,
-          shifts_time: time_of_day + ":00",
         });
       }
     }

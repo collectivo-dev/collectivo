@@ -1,19 +1,16 @@
 <script setup lang="ts">
 import { DateTime } from "luxon";
-import {
-  getAllShiftOccurences,
-  type ShiftOccurence,
-} from "~/composables/shifts";
+import { getAllShiftOccurrences } from "~/composables/shifts";
 
 const toast = useToast();
 setCollectivoTitle("Shift calendar");
 const from = ref(DateTime.now().startOf("day").toJSDate());
 const to = ref(DateTime.now().startOf("day").plus({ months: 1 }).toJSDate());
 
-const shiftOccurrences: Ref<ShiftOccurence[]> = ref([]);
+const shiftOccurrences: Ref<ShiftOccurrence[]> = ref([]);
 
 async function updateShifts() {
-  getAllShiftOccurences(
+  getAllShiftOccurrences(
     DateTime.fromISO(from.value.toISOString()),
     DateTime.fromISO(to.value.toISOString()),
   )
@@ -44,11 +41,15 @@ watch(to, updateShifts);
     <CollectivoFormDate id="to" v-model="to" />
   </CollectivoContainer>
   <CollectivoContainer>
-    <ul>
-      <li v-for="(shiftOccurrence, index) in shiftOccurrences" :key="index">
-        {{ shiftOccurrence.shift.shifts_name }} - {{ shiftOccurrence.start }} -
-        {{ shiftOccurrence.end }}
-      </li>
+    <p v-if="shiftOccurrences.length == 0">
+      No shifts between {{ from }} and {{ to }}
+    </p>
+    <ul v-if="shiftOccurrences.length > 0">
+      <ShiftCard
+        v-for="(shiftOccurrence, index) in shiftOccurrences"
+        :key="index"
+        :shift-occurrence="shiftOccurrence"
+      />
     </ul>
   </CollectivoContainer>
 </template>

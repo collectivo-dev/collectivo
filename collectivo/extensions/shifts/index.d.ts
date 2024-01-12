@@ -1,16 +1,19 @@
-declare global {
-  // Database schema
-  interface CollectivoShiftsSchema {
-    collectivo_shifts: CollectivoShift[];
-  }
+import { DateTime } from "luxon";
 
+declare global {
   interface CollectivoShift {
-    id: string;
+    id?: string;
     shifts_name: string;
     shifts_from: string;
-    shifts_to: string;
+    shifts_to?: string;
     shifts_duration: number;
     shifts_repeats_every: number;
+  }
+
+  interface ShiftOccurrence {
+    shift: CollectivoShift;
+    start: DateTime;
+    end: DateTime;
   }
 }
 
