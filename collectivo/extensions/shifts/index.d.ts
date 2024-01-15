@@ -15,6 +15,13 @@ declare global {
     start: DateTime;
     end: DateTime;
   }
+
+  enum ShiftUserType {
+    TypeNotChosen = "TYPE_NOT_CHOSEN",
+    Regular = "REGULAR",
+    Jumper = "JUMPER",
+    NotInShiftSystem = "NOT_IN_SHIFT_SYSTEM",
+  }
 }
 
 // Types for input of app.config.ts

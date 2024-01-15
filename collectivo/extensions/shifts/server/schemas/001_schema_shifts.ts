@@ -111,6 +111,34 @@ schema.fields = [
     schema: {},
     meta: {},
   },
+  {
+    collection: "directus_users",
+    field: "shifts_group",
+    type: "alias",
+    meta: {
+      order: 200,
+      interface: "group-detail",
+      special: ["alias", "no-data", "group"],
+      options: { title: "$t:person", headerIcon: "account_circle" },
+    },
+  },
+  {
+    collection: "directus_users",
+    field: "shifts_user_type",
+    type: "string",
+    meta: {
+      group: "shifts_group",
+      conditions: [
+        {
+          rule: {
+            shifts_user_type: {
+              _in: Object.values(ShiftUserType),
+            },
+          },
+        },
+      ],
+    },
+  },
 ];
 
 schema.createO2MRelation("shifts_slots", "shifts_shifts", "shifts_shift");
