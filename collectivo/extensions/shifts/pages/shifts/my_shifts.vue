@@ -41,7 +41,7 @@ for (const assignment of assignments) {
     <h2>Status</h2>
     <CollectivoCard>
       <template #content>
-        <p>My type : TODO</p>
+        <p>My type : {{ user.data["shifts_user_type"] }}</p>
       </template>
     </CollectivoCard>
   </CollectivoContainer>

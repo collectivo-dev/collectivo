@@ -153,7 +153,9 @@ schema.createO2MRelation(
   "shifts_user",
   {
     collectionManyFieldType: "uuid",
-    template:
-      "{{shifts_shifts.shifts_name}} {{shifts_shifts.shifts_start_datetime}}",
   },
 );
+
+schema.createM2MRelation("shifts_skills", "directus_users", {
+  m2mFieldType2: "uuid",
+});
