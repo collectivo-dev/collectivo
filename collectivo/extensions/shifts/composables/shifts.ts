@@ -24,6 +24,13 @@ export const getAllShiftOccurrences = async (
 
   return occurrences;
 };
+export const getNextOccurence = (shift: CollectivoShift): ShiftOccurrence => {
+  const date = shiftToRRule(shift).after(
+    luxonDateTimeToRruleDatetime(DateTime.now()),
+  );
+
+  return rruleDateToShiftOccurence(shift, date);
+};
 
 export const getOccurrencesForShift = (
   shift: CollectivoShift,
@@ -39,16 +46,23 @@ export const getOccurrencesForShift = (
   const shiftOccurrences: ShiftOccurrence[] = [];
 
   for (const date of dates) {
-    const start = DateTime.fromJSDate(date);
-
-    shiftOccurrences.push({
-      shift: shift,
-      start: start,
-      end: start.plus({ minute: shift.shifts_duration }),
-    });
+    shiftOccurrences.push(rruleDateToShiftOccurence(shift, date));
   }
 
   return shiftOccurrences;
+};
+
+const rruleDateToShiftOccurence = (
+  shift: CollectivoShift,
+  date: Date,
+): ShiftOccurrence => {
+  const start = DateTime.fromJSDate(date);
+
+  return {
+    shift: shift,
+    start: start,
+    end: start.plus({ minute: shift.shifts_duration }),
+  };
 };
 
 export const shiftToRRule = (shift: CollectivoShift): RRule => {

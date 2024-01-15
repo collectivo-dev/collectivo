@@ -45,7 +45,7 @@ watch(to, updateShifts);
       No shifts between {{ from }} and {{ to }}
     </p>
     <ul v-if="shiftOccurrences.length > 0">
-      <ShiftCard
+      <ShiftOccurenceCard
         v-for="(shiftOccurrence, index) in shiftOccurrences"
         :key="index"
         :shift-occurrence="shiftOccurrence"

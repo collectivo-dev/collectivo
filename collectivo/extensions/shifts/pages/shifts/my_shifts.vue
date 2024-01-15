@@ -1,15 +1,16 @@
 <script setup lang="ts">
 import { readItems } from "@directus/sdk";
+import AssignmentCard from "~/components/AssignmentCard.vue";
 
 setCollectivoTitle("My shifts");
 const directus = useDirectus();
 const user = useCollectivoUser();
 await user.value.load();
 
-const assignments = await directus.request(
+const assignments: CollectivoAssignment[] = await directus.request(
   readItems("shifts_assignments", {
     filter: { shifts_user: { _eq: user.value.data?.id } },
-    fields: "shifts_slot.*,shifts_slot.shifts_shift.*",
+    fields: "*,shifts_slot.*,shifts_slot.shifts_shift.*",
   }),
 );
 </script>
@@ -25,19 +26,13 @@ const assignments = await directus.request(
   </CollectivoContainer>
 
   <CollectivoContainer>
-    <h2>My upcoming shifts</h2>
-    <p v-if="!assignments.length">No upcoming shift</p>
-    <CollectivoCard
+    <h2>My assignments</h2>
+    <p v-if="!assignments.length">No assignments</p>
+    <AssignmentCard
       v-for="assignment in assignments"
       :key="assignment.id"
-      :title="assignment.shifts_slot.shifts_shift.shifts_name"
+      :shift-assignment="assignment"
     >
-      <template #content>
-        <p>
-          Assigned to {{ assignment.shifts_slot.shifts_name }} on
-          {{ assignment.shifts_slot.shifts_shift.shifts_start_datetime }}
-        </p>
-      </template>
-    </CollectivoCard>
+    </AssignmentCard>
   </CollectivoContainer>
 </template>
