@@ -85,3 +85,32 @@ export const luxonDateTimeToRruleDatetime = (luxonDateTime: DateTime): Date => {
     luxonDateTime.minute,
   );
 };
+
+export const isAssignmentActive = (
+  assignment: CollectivoAssignment,
+  atDate?: DateTime,
+): boolean => {
+  if (!atDate) {
+    atDate = DateTime.now();
+  }
+
+  const from = DateTime.fromISO(assignment.shifts_from);
+
+  if (from > atDate) {
+    return false;
+  }
+
+  const to = assignment.shifts_to
+    ? DateTime.fromISO(assignment.shifts_to)
+    : null;
+
+  return !(to && to < atDate);
+};
+
+export const isNextOccurrenceWithinAssignment = (
+  assignment: CollectivoAssignment,
+): boolean => {
+  const nextOccurrence = getNextOccurence(assignment.shifts_slot.shifts_shift);
+
+  return isAssignmentActive(assignment, nextOccurrence.start);
+};

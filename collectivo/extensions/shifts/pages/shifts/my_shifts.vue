@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { readItems } from "@directus/sdk";
 import AssignmentCard from "~/components/AssignmentCard.vue";
+import { getNextOccurence, isAssignmentActive } from "~/composables/shifts";
+import { DateTime } from "luxon";
 
 setCollectivoTitle("My shifts");
 const directus = useDirectus();
@@ -13,6 +15,25 @@ const assignments: CollectivoAssignment[] = await directus.request(
     fields: "*,shifts_slot.*,shifts_slot.shifts_shift.*",
   }),
 );
+
+assignments.sort((a, b) => {
+  const nextA = getNextOccurence(a.shifts_slot.shifts_shift);
+  const nextB = getNextOccurence(b.shifts_slot.shifts_shift);
+  return nextA.start.toMillis() - nextB.start.toMillis();
+});
+
+const activeAndFutureAssignments: CollectivoAssignment[] = [];
+const pastAssignments: CollectivoAssignment[] = [];
+
+for (const assignment of assignments) {
+  const from = DateTime.fromISO(assignment.shifts_from);
+
+  if (isAssignmentActive(assignment) || from > DateTime.now()) {
+    activeAndFutureAssignments.push(assignment);
+  } else {
+    pastAssignments.push(assignment);
+  }
+}
 </script>
 
 <template>
@@ -26,10 +47,20 @@ const assignments: CollectivoAssignment[] = await directus.request(
   </CollectivoContainer>
 
   <CollectivoContainer>
-    <h2>My assignments</h2>
-    <p v-if="!assignments.length">No assignments</p>
+    <h2>My current assignments</h2>
+    <p v-if="!activeAndFutureAssignments.length">No current assignments</p>
     <AssignmentCard
-      v-for="assignment in assignments"
+      v-for="assignment in activeAndFutureAssignments"
+      :key="assignment.id"
+      :shift-assignment="assignment"
+    >
+    </AssignmentCard>
+  </CollectivoContainer>
+
+  <CollectivoContainer v-if="pastAssignments.length">
+    <h2>My past assignments</h2>
+    <AssignmentCard
+      v-for="assignment in pastAssignments"
       :key="assignment.id"
       :shift-assignment="assignment"
     >
