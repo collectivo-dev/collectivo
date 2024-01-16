@@ -1,6 +1,7 @@
 import { readItems } from "@directus/sdk";
 import { DateTime } from "luxon";
 import { datetime, RRule } from "rrule";
+import type { ShiftOccurrence } from "~/composables/types";
 
 export const getAllShiftOccurrences = async (
   from: DateTime,

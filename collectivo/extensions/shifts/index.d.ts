@@ -1,5 +1,3 @@
-import { DateTime } from "luxon";
-
 declare global {
   interface CollectivoShift {
     id?: string;
@@ -28,12 +26,6 @@ declare global {
     shifts_to?: string;
     shifts_slot: CollectivoSlot;
     shifts_user: CollectivoUser;
-  }
-
-  interface ShiftOccurrence {
-    shift: CollectivoShift;
-    start: DateTime;
-    end: DateTime;
   }
 }
 

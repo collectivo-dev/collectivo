@@ -1,17 +1,26 @@
 <script setup lang="ts">
 import { DateTime } from "luxon";
-import { getNextOccurence } from "~/composables/shifts";
+import {
+  getNextOccurence,
+  isAssignmentActive,
+  isNextOccurrenceWithinAssignment,
+} from "~/composables/shifts";
 
-const props = defineProps(["shiftAssignment"]);
-const shiftAssignment: CollectivoAssignment = props.shiftAssignment;
-const from = DateTime.fromISO(shiftAssignment.shifts_from);
+const props = defineProps({
+  shiftAssignment: {
+    type: Object as PropType<CollectivoAssignment>,
+    required: true,
+  },
+});
 
-const to = shiftAssignment.shifts_to
-  ? DateTime.fromISO(shiftAssignment.shifts_to)
+const from: DateTime = DateTime.fromISO(props.shiftAssignment.shifts_from);
+
+const to = props.shiftAssignment.shifts_to
+  ? DateTime.fromISO(props.shiftAssignment.shifts_to)
   : null;
 
 const nextOccurrence = getNextOccurence(
-  shiftAssignment.shifts_slot.shifts_shift,
+  props.shiftAssignment.shifts_slot.shifts_shift,
 );
 </script>
 
