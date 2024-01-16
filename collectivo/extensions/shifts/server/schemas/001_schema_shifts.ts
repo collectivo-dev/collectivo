@@ -1,6 +1,6 @@
 // This function creates an empty schema for version 0.0.1 of the shifts extension
 // A schema can be used to declaratively define the structure of the database
-import { ShiftUserType } from "~/server/utils/ShiftUserTypes";
+import { ShiftUserType } from "../utils/ShiftUserTypes";
 
 const schema = initSchema("shifts", "0.0.1");
 

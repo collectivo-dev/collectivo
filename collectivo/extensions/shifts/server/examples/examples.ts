@@ -30,6 +30,7 @@ async function cleanShiftsData() {
     "shifts_slots",
     "shifts_skills",
     "shifts_assignments",
+    "shifts_skills_directus_users",
   ];
 
   for (const schema of schemas) {
@@ -99,9 +100,15 @@ async function createSlots() {
 async function createSkills() {
   const directus = await useDirectusAdmin();
 
-  const skill = await directus.request(
+  const cashierSkill = await directus.request(
     createItem("shifts_skills", {
       shifts_name: "Cashier",
+    }),
+  );
+
+  await directus.request(
+    createItem("shifts_skills", {
+      shifts_name: "First aid",
     }),
   );
 
@@ -116,7 +123,7 @@ async function createSkills() {
 
   for (const slot of slots) {
     requests.push({
-      shifts_skills_id: skill["id"],
+      shifts_skills_id: cashierSkill["id"],
       shifts_slots_id: slot["id"],
     });
   }

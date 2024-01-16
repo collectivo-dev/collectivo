@@ -22,6 +22,13 @@ assignments.sort((a, b) => {
   return nextA.start.toMillis() - nextB.start.toMillis();
 });
 
+const skillsUserLinks = await directus.request(
+  readItems("shifts_skills_directus_users", {
+    filter: { directus_users_id: { _eq: user.value.data?.id } },
+    fields: "*.*",
+  }),
+);
+
 const activeAndFutureAssignments: CollectivoAssignment[] = [];
 const pastAssignments: CollectivoAssignment[] = [];
 
@@ -42,6 +49,14 @@ for (const assignment of assignments) {
     <CollectivoCard>
       <template #content>
         <p>My type : {{ user.data["shifts_user_type"] }}</p>
+        <p>
+          <span>My skills: </span>
+          <span v-if="!skillsUserLinks.length">None</span>
+          <span v-for="(link, index) in skillsUserLinks" :key="link.id">
+            <span v-if="index !== 0">, </span>
+            <span>{{ link.shifts_skills_id.shifts_name }}</span>
+          </span>
+        </p>
       </template>
     </CollectivoCard>
   </CollectivoContainer>
