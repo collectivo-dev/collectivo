@@ -4,7 +4,10 @@ import { defineProps, toRefs } from "vue";
 
 const props = defineProps(["shiftOccurrence"]);
 const { shiftOccurrence } = toRefs(props);
-const date = shiftOccurrence.value.start.toLocaleString(DateTime.DATE_SHORT);
+
+const date = shiftOccurrence.value.start.toLocaleString(
+  DateTime.DATE_MED_WITH_WEEKDAY,
+);
 
 const start_time = shiftOccurrence.value.start.toLocaleString(
   DateTime.TIME_SIMPLE,
@@ -18,9 +21,7 @@ const end_time = shiftOccurrence.value.end.toLocaleString(DateTime.TIME_SIMPLE);
     :title="`${shiftOccurrence.shift.shifts_name} on ${date} from ${start_time} to ${end_time}`"
   >
     <template #content>
-      <p>
-        {{ shiftOccurrence.start }}
-      </p>
+      <p>WIP</p>
     </template>
   </CollectivoCard>
 </template>
