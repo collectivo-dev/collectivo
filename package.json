@@ -12,7 +12,7 @@
     "format:fix": "pnpm run -r --parallel format:fix",
     "lint": "pnpm run -r --parallel lint",
     "lint:fix": "pnpm run -r --parallel lint:fix",
-    "build": "pnpm run -r --parallel build",
+    "build": "pnpm -F=@collectivo/app run build",
     "preview": "node collectivo/collectivo/.output/server/index.mjs",
     "seed": "curl -f -LI --header \"Authorization:badToken\" --request POST \"http://localhost:3000/api/migrate/?examples=true\""
   },
