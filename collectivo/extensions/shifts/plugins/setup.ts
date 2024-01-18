@@ -1,4 +1,4 @@
-import { ShiftUserType } from "~/server/utils/ShiftUserTypes";
+import { ShiftUserType } from "~/server/utils/ShiftUserType";
 
 export default defineNuxtPlugin({
   name: "shifts-setup",

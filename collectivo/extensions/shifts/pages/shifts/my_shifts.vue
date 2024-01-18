@@ -3,6 +3,7 @@ import { readItems } from "@directus/sdk";
 import AssignmentCard from "~/components/AssignmentCard.vue";
 import { getNextOccurence, isAssignmentActive } from "~/composables/shifts";
 import { DateTime } from "luxon";
+import { getUserScore } from "../../composables/shift_logs";
 
 setCollectivoTitle("My shifts");
 const directus = useDirectus();
@@ -41,6 +42,8 @@ for (const assignment of assignments) {
     pastAssignments.push(assignment);
   }
 }
+
+const score = await getUserScore(user.value.data!, DateTime.now());
 </script>
 
 <template>
@@ -56,6 +59,9 @@ for (const assignment of assignments) {
             <span v-if="index !== 0">, </span>
             <span>{{ link.shifts_skills_id.shifts_name }}</span>
           </span>
+        </p>
+        <p>
+          <span>My score: {{ score }}</span>
         </p>
       </template>
     </CollectivoCard>

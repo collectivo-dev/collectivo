@@ -1,10 +1,23 @@
 // This function creates an empty schema for version 0.0.1 of the shifts extension
 // A schema can be used to declaratively define the structure of the database
-import { ShiftUserType } from "../utils/ShiftUserTypes";
+import { ShiftUserType } from "../utils/ShiftUserType";
+import { ShiftLogType } from "../utils/ShiftLogType";
 
 const schema = initSchema("shifts", "0.0.1");
 
 export default schema;
+
+const shiftUserTypeDropdownChoices = [];
+
+for (const type of Object.values(ShiftUserType)) {
+  shiftUserTypeDropdownChoices.push({ text: type, value: type });
+}
+
+const shiftLogTypeDropdownChoices = [];
+
+for (const type of Object.values(ShiftLogType)) {
+  shiftLogTypeDropdownChoices.push({ text: type, value: type });
+}
 
 schema.collections = [
   {
@@ -36,6 +49,15 @@ schema.collections = [
   },
   {
     collection: "shifts_assignments",
+    schema: {
+      schema: "schema",
+      name: "schema",
+      comment: null,
+    },
+    meta: {},
+  },
+  {
+    collection: "shifts_logs",
     schema: {
       schema: "schema",
       name: "schema",
@@ -128,24 +150,49 @@ schema.fields = [
     collection: "directus_users",
     field: "shifts_user_type",
     type: "string",
+    schema: { is_nullable: false, default_value: ShiftUserType.TypeNotChosen },
     meta: {
       group: "shifts_group",
-      conditions: [
-        {
-          rule: {
-            shifts_user_type: {
-              _in: Object.values(ShiftUserType),
-            },
-          },
-        },
-      ],
+      interface: "select-dropdown",
+      options: {
+        choices: shiftUserTypeDropdownChoices,
+      },
     },
+  },
+  {
+    collection: "shifts_logs",
+    field: "shifts_type",
+    type: "string",
+    schema: { is_nullable: false },
+    meta: {
+      interface: "select-dropdown",
+      options: {
+        choices: shiftLogTypeDropdownChoices,
+      },
+    },
+  },
+  {
+    collection: "shifts_logs",
+    field: "shifts_datetime",
+    type: "dateTime",
+    schema: { is_nullable: false },
+    meta: {},
   },
 ];
 
 schema.createO2MRelation("shifts_slots", "shifts_shifts", "shifts_shift");
 schema.createM2MRelation("shifts_skills", "shifts_slots");
 schema.createO2MRelation("shifts_assignments", "shifts_slots", "shifts_slot");
+
+schema.createO2MRelation("shifts_logs", "directus_users", "shifts_user", {
+  collectionManyFieldType: "uuid",
+});
+
+schema.createO2MRelation(
+  "shifts_logs",
+  "shifts_assignments",
+  "shifts_assignment",
+);
 
 schema.createO2MRelation(
   "shifts_assignments",

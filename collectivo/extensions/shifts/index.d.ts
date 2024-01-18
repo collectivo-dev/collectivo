@@ -1,3 +1,5 @@
+import type { ShiftLogType } from "~/server/utils/ShiftLogType";
+
 declare global {
   interface CollectivoShift {
     id?: string;
@@ -26,6 +28,14 @@ declare global {
     shifts_to?: string;
     shifts_slot: CollectivoSlot;
     shifts_user: CollectivoUser;
+  }
+
+  interface CollectivoLog {
+    id: string;
+    shifts_type: ShiftLogType;
+    shifts_datetime: string;
+    shifts_user: CollectivoUser;
+    shifts_assignment: CollectivoAssignment;
   }
 }
 
