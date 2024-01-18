@@ -6,22 +6,7 @@ export const getUserScore = async (
   user: CollectivoUser,
   at?: DateTime,
 ): Promise<number> => {
-  const directus = useDirectus();
-
-  const query = {
-    filter: { shifts_user: { _eq: user.id } },
-    fields: "shifts_type",
-  };
-
-  if (at) {
-    query.filter["shifts_datetime"] = {
-      _lte: at.toString(),
-    };
-  }
-
-  const logs: CollectivoLog[] = await directus.request(
-    readItems("shifts_logs", query),
-  );
+  const logs: CollectivoLog[] = await getUserLogs(user, at);
 
   let score = 0;
 
@@ -37,4 +22,28 @@ export const getUserScore = async (
   }
 
   return score;
+};
+
+export const getUserLogs = async (
+  user: CollectivoUser,
+  at?: DateTime,
+): Promise<CollectivoLog[]> => {
+  const directus = useDirectus();
+
+  const query = {
+    filter: { shifts_user: { _eq: user.id } },
+    fields: "*",
+  };
+
+  if (at) {
+    query.filter["shifts_datetime"] = {
+      _lte: at.toString(),
+    };
+  }
+
+  const logs: CollectivoLog[] = await directus.request(
+    readItems("shifts_logs", query),
+  );
+
+  return logs;
 };

@@ -3,7 +3,8 @@ import { readItems } from "@directus/sdk";
 import AssignmentCard from "~/components/AssignmentCard.vue";
 import { getNextOccurence, isAssignmentActive } from "~/composables/shifts";
 import { DateTime } from "luxon";
-import { getUserScore } from "../../composables/shift_logs";
+import { getUserLogs, getUserScore } from "~/composables/shift_logs";
+import { ShiftLogType } from "~/server/utils/ShiftLogType";
 
 setCollectivoTitle("My shifts");
 const directus = useDirectus();
@@ -44,6 +45,7 @@ for (const assignment of assignments) {
 }
 
 const score = await getUserScore(user.value.data!, DateTime.now());
+const logs = await getUserLogs(user.value.data!, DateTime.now());
 </script>
 
 <template>
@@ -86,5 +88,24 @@ const score = await getUserScore(user.value.data!, DateTime.now());
       :shift-assignment="assignment"
     >
     </AssignmentCard>
+  </CollectivoContainer>
+
+  <CollectivoContainer v-if="logs.length">
+    <h2>Last score updates</h2>
+    <ul>
+      <li v-for="log in logs.slice(0, 10)" :key="log.id">
+        <strong>
+          <span v-if="log.shifts_type == ShiftLogType.ATTENDED">+1</span>
+          <span v-if="log.shifts_type == ShiftLogType.MISSED">-2</span>
+        </strong>
+        <span>
+          ({{
+            DateTime.fromISO(log.shifts_datetime).toLocaleString(
+              DateTime.DATETIME_MED_WITH_WEEKDAY,
+            )
+          }})</span
+        >
+      </li>
+    </ul>
   </CollectivoContainer>
 </template>
