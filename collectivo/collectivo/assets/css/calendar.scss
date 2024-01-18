@@ -28,7 +28,7 @@
       tbody {
         tr {
           td {
-            @apply border-purple-500;
+            @apply border-gray-300;
           }
         }
       }
@@ -52,7 +52,7 @@
 
   .fc-scrollgrid-section {
     > td {
-      @apply border-[1px] border-solid border-purple-500 rounded-2xl;
+      @apply border-[1px] border-solid border-gray-300 rounded-2xl;
     }
   }
 
@@ -72,9 +72,9 @@
 
       .fc-next-button,
       .fc-prev-button {
-        @apply p-0.5 bg-purple-500 rounded-lg border-none focus:shadow-none;
+        @apply p-0.5 bg-primary-500 rounded-lg border-none focus:shadow-none;
         &:hover {
-          @apply bg-purple-500/70;
+          @apply bg-primary-500/70;
         }
 
         .fc-icon {
@@ -134,7 +134,7 @@
       }
 
       &.fc-day-today {
-        @apply bg-purple-500;
+        @apply bg-blue-50;
       }
     }
   }
@@ -149,14 +149,14 @@
   }
 
   .fc-daygrid-event {
-    @apply font-semibold text-xs bg-purple-500 border-none py-2 px-3 rounded-lg transition-all cursor-pointer mt-0 mr-[5px] mb-[3px] ml-0;
+    @apply font-semibold text-xs bg-primary-100 border-none py-2 px-3 rounded-lg transition-all cursor-pointer mt-1 mr-[5px] mb-[3px] ml-1;
 
     .fc-event-main {
-      @apply text-purple-500;
+      @apply text-primary-500;
     }
 
     //&:hover {
-    //  @apply bg-purple-500/60;
+    //  @apply bg-primary-500/60;
     //}
   }
 
@@ -168,7 +168,7 @@
     @apply border-0;
 
     .fc-list-event + .fc-list-event:not(.fc-list-day) {
-      @apply border-t-[1px] border-purple-500;
+      @apply border-t-[1px] border-gray-300;
     }
 
     .fc-list-event {
@@ -195,7 +195,7 @@
       }
 
       td .list-week-view {
-        @apply font-semibold text-xs bg-purple-500 border-none py-2 px-3 rounded-lg transition-all cursor-pointer text-purple-500;
+        @apply font-semibold text-xs bg-primary-500 border-none py-2 px-3 rounded-lg transition-all cursor-pointer text-primary-500;
       }
     }
 

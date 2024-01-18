@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "@collectivo/collectivo": "workspace:*",
+    "@fullcalendar/luxon3": "^6.1.10",
     "luxon": "^3.4.4",
     "rrule": "^2.8.1"
   },
