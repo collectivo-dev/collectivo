@@ -1,42 +1,61 @@
 <script setup>
 const props = defineProps(["calendarRef"]);
 
-const currentMonth = ref("");
+const displayedDate = ref("");
 const calendarApi = ref(null);
-
-onMounted(async () => {
-  const calendar = await props.calendarRef.value.getApi;
-  calendarApi.value = calendar();
-  currentMonth.value = calendarApi.value.view.title;
-});
+const dropdownLabel = ref("");
+const dropdownIcon = ref("");
 
 const prevHandler = () => {
   calendarApi.value.prev();
-  currentMonth.value = calendarApi.value.view.title;
+  displayedDate.value = calendarApi.value.view.title;
 };
 
 const nextHandler = () => {
   calendarApi.value.next();
-  currentMonth.value = calendarApi.value.view.title;
+  displayedDate.value = calendarApi.value.view.title;
 };
 
 const items = [
-  [
-    {
-      title: "Week",
-    },
-    {
-      title: "Day",
-    },
-  ],
+  {
+    label: "Month",
+    icon: "i-system-uicons-calendar-month",
+    view: "dayGridMonth",
+  },
+  {
+    label: "Week",
+    icon: "i-system-uicons-calendar-week",
+    view: "timeGridWeek",
+  },
+  {
+    label: "Day",
+    icon: "i-system-uicons-calendar-day",
+    view: "timeGridDay",
+  },
 ];
+
+for (const item of items) {
+  item["click"] = () => {
+    calendarApi.value.changeView(item.view);
+    displayedDate.value = calendarApi.value.view.title;
+    dropdownLabel.value = item.label;
+    dropdownIcon.value = item.icon;
+  };
+}
+
+onMounted(async () => {
+  const calendar = await props.calendarRef.value.getApi;
+  calendarApi.value = calendar();
+  displayedDate.value = calendarApi.value.view.title;
+  items[0].click();
+});
 </script>
 
 <template>
   <div class="calendar-header">
     <div class="calendar-header__left">
       <h2 class="calendar-header__left__title">
-        {{ currentMonth }}
+        {{ displayedDate }}
       </h2>
       <div class="calendar-header__left__buttons">
         <UButton
@@ -58,26 +77,13 @@ const items = [
       </div>
     </div>
     <div class="calendar-header__right">
-      <UDropdown :items="items">
+      <UDropdown :items="[items]">
         <UButton
-          label="Month"
-          color="gray"
-          class="calendar-header__right__btn"
-          :padded="false"
-        >
-          <template #leading>
-            <UIcon name="i-system-uicons-calendar" class="text-base mr-2" />
-          </template>
-          <template #trailing>
-            <UIcon name="i-system-uicons-chevron-down" class="text-2xl ml-4" />
-          </template>
-        </UButton>
-
-        <template #item="{ item }">
-          <div class="dropdown-item">
-            <p class="dropdown-item__title">{{ item.title }}</p>
-          </div>
-        </template>
+          :label="dropdownLabel"
+          color="white"
+          trailing-icon="i-system-uicons-chevron-down"
+          :leading-icon="dropdownIcon"
+        />
       </UDropdown>
     </div>
   </div>

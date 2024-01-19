@@ -7,9 +7,6 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import luxonPlugin from "@fullcalendar/luxon3";
 import { DateTime } from "luxon";
 
-const viewType = ref("");
-const innerWidth = ref("");
-
 const calendarOptions = ref({
   plugins: [
     dayGridPlugin,
@@ -21,6 +18,14 @@ const calendarOptions = ref({
   initialView: "dayGridMonth",
   headerToolbar: false,
   events: [],
+  allDaySlot: false,
+  displayEventTime: true,
+  eventTimeFormat: {
+    hour: "2-digit",
+    minute: "2-digit",
+    meridiem: false,
+    hour12: false,
+  },
 });
 
 const calendarRef = ref(null);
@@ -30,47 +35,32 @@ const calendarComputed = () => {
 };
 
 onMounted(() => {
-  resize();
-  registerTest();
-  window.addEventListener("resize", resize);
+  registerEventUpdate();
 });
 
-const resize = async () => {
-  const deviceWidth = window.matchMedia("(max-width: 767px)");
-  const calendar = await calendarRef.value.getApi();
-
-  if (deviceWidth.matches) {
-    innerWidth.value = `${window.innerWidth}px`;
-    calendar.changeView("listWeek");
-    calendar.setHeight(585);
-    viewType.value = "listWeek";
-  } else {
-    calendar.changeView("dayGridMonth");
-    viewType.value = "";
-  }
-};
-
-const registerTest = async () => {
+const registerEventUpdate = async () => {
   const calendar = await calendarRef.value.getApi();
 
   calendar.on("datesSet", (infos) => {
-    getEvents(DateTime.fromJSDate(infos.start), DateTime.fromJSDate(infos.end));
+    updateEvents(
+      DateTime.fromJSDate(infos.start),
+      DateTime.fromJSDate(infos.end),
+    );
   });
 
-  await getEvents(
+  await updateEvents(
     DateTime.fromJSDate(calendar.view.activeStart),
     DateTime.fromJSDate(calendar.view.activeEnd),
   );
 };
 
-async function getEvents(from, to) {
+async function updateEvents(from, to) {
   const occurrences = await getAllShiftOccurrences(from, to);
 
   const events = [];
 
-  for (const [i, occurrence] of occurrences.entries()) {
+  for (const occurrence of occurrences) {
     events.push({
-      id: i,
       title: occurrence.shift.shifts_name,
       start: occurrence.start.toJSDate(),
       end: occurrence.end.toJSDate(),
@@ -85,20 +75,6 @@ async function getEvents(from, to) {
 <template>
   <div id="dashboard-calendar" class="calendar">
     <CalendarHeader :calendar-ref="calendarComputed()" />
-    <full-calendar ref="calendarRef" :options="calendarOptions">
-      <template #eventContent="arg">
-        <div
-          :class="viewType === 'listWeek' ? 'list-week-view' : 'day-grid-view'"
-        >
-          {{ arg.event.title }}
-        </div>
-      </template>
-    </full-calendar>
+    <full-calendar ref="calendarRef" :options="calendarOptions" />
   </div>
 </template>
-
-<style lang="scss" scoped>
-.calendar {
-  @apply mt-10;
-}
-</style>
