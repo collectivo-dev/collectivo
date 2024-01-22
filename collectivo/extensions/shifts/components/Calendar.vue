@@ -26,6 +26,7 @@ const calendarOptions = ref({
     meridiem: false,
     hour12: false,
   },
+  nowIndicator: true,
 });
 
 const calendarRef = ref(null);
@@ -65,6 +66,7 @@ async function updateEvents(from, to) {
       start: occurrence.start.toJSDate(),
       end: occurrence.end.toJSDate(),
       allDay: false,
+      url: "/shifts/shift/" + occurrence.shift.id,
     });
   }
 

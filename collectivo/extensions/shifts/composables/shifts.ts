@@ -1,7 +1,7 @@
 import { readItems } from "@directus/sdk";
 import { DateTime } from "luxon";
 import { datetime, RRule } from "rrule";
-import type { ShiftOccurrence } from "~/composables/types";
+import type { CollectivoShift, ShiftOccurrence } from "~/composables/types";
 
 export const getAllShiftOccurrences = async (
   from: DateTime,
@@ -25,12 +25,29 @@ export const getAllShiftOccurrences = async (
 
   return occurrences;
 };
-export const getNextOccurence = (shift: CollectivoShift): ShiftOccurrence => {
+
+export const getNextOccurrences = (
+  shift: CollectivoShift,
+  maxOccurrences: number,
+  after?: DateTime,
+) => {
+  const nextOccurrences = [];
+  let nextOccurrence = getNextOccurrence(shift, after ?? DateTime.now());
+
+  while (nextOccurrence !== null && nextOccurrences.length < maxOccurrences) {
+    nextOccurrences.push(nextOccurrence);
+    nextOccurrence = getNextOccurrence(shift, nextOccurrence.end);
+  }
+
+  return nextOccurrences;
+};
+
+export const getNextOccurrence = (shift: CollectivoShift, after?: DateTime) => {
   const date = shiftToRRule(shift).after(
-    luxonDateTimeToRruleDatetime(DateTime.now()),
+    luxonDateTimeToRruleDatetime(after ?? DateTime.now()),
   );
 
-  return rruleDateToShiftOccurence(shift, date);
+  return date ? rruleDateToShiftOccurrence(shift, date) : null;
 };
 
 export const getOccurrencesForShift = (
@@ -47,13 +64,13 @@ export const getOccurrencesForShift = (
   const shiftOccurrences: ShiftOccurrence[] = [];
 
   for (const date of dates) {
-    shiftOccurrences.push(rruleDateToShiftOccurence(shift, date));
+    shiftOccurrences.push(rruleDateToShiftOccurrence(shift, date));
   }
 
   return shiftOccurrences;
 };
 
-const rruleDateToShiftOccurence = (
+const rruleDateToShiftOccurrence = (
   shift: CollectivoShift,
   date: Date,
 ): ShiftOccurrence => {
@@ -87,23 +104,31 @@ export const luxonDateTimeToRruleDatetime = (luxonDateTime: DateTime): Date => {
   );
 };
 
-export const isAssignmentActive = (
-  assignment: CollectivoAssignment,
+export const isShiftDurationModelActive = (
+  duration_model: { shifts_from: string; shifts_to?: string },
+  atDate?: DateTime,
+): boolean => {
+  return isFromToActive(
+    DateTime.fromISO(duration_model.shifts_from),
+    duration_model.shifts_to
+      ? DateTime.fromISO(duration_model.shifts_to)
+      : undefined,
+    atDate,
+  );
+};
+
+export const isFromToActive = (
+  from: DateTime,
+  to?: DateTime,
   atDate?: DateTime,
 ): boolean => {
   if (!atDate) {
     atDate = DateTime.now();
   }
 
-  const from = DateTime.fromISO(assignment.shifts_from);
-
   if (from > atDate) {
     return false;
   }
-
-  const to = assignment.shifts_to
-    ? DateTime.fromISO(assignment.shifts_to)
-    : null;
 
   return !(to && to < atDate);
 };
@@ -111,7 +136,10 @@ export const isAssignmentActive = (
 export const isNextOccurrenceWithinAssignment = (
   assignment: CollectivoAssignment,
 ): boolean => {
-  const nextOccurrence = getNextOccurence(assignment.shifts_slot.shifts_shift);
+  const nextOccurrence = getNextOccurrence(assignment.shifts_slot.shifts_shift);
 
-  return isAssignmentActive(assignment, nextOccurrence.start);
+  return (
+    !!nextOccurrence &&
+    isShiftDurationModelActive(assignment, nextOccurrence.start)
+  );
 };

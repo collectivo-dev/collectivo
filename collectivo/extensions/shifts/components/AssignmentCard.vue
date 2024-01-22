@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { DateTime } from "luxon";
 import {
-  getNextOccurence,
-  isAssignmentActive,
+  getNextOccurrence,
   isNextOccurrenceWithinAssignment,
+  isShiftDurationModelActive,
 } from "~/composables/shifts";
 
 const props = defineProps({
@@ -19,7 +19,7 @@ const to = props.shiftAssignment.shifts_to
   ? DateTime.fromISO(props.shiftAssignment.shifts_to)
   : null;
 
-const nextOccurrence = getNextOccurence(
+const nextOccurrence = getNextOccurrence(
   props.shiftAssignment.shifts_slot.shifts_shift,
 );
 </script>
@@ -38,7 +38,7 @@ const nextOccurrence = getNextOccurence(
       <p>
         <span
           >Assignment currently active :
-          {{ isAssignmentActive(shiftAssignment) }}</span
+          {{ isShiftDurationModelActive(shiftAssignment) }}</span
         >
         (<span v-if="from <= DateTime.now() && !to">permanent assignment</span>
         <span v-if="from > DateTime.now() && !to"
@@ -55,7 +55,7 @@ const nextOccurrence = getNextOccurence(
       </p>
       <UAlert
         v-if="
-          isAssignmentActive(shiftAssignment) &&
+          isShiftDurationModelActive(shiftAssignment) &&
           !isNextOccurrenceWithinAssignment(shiftAssignment)
         "
         title="Warning"

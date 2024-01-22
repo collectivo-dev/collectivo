@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { readItems } from "@directus/sdk";
 import AssignmentCard from "~/components/AssignmentCard.vue";
-import { getNextOccurence, isAssignmentActive } from "~/composables/shifts";
+import {
+  getNextOccurrence,
+  isShiftDurationModelActive,
+} from "~/composables/shifts";
 import { DateTime } from "luxon";
 import { getUserLogs, getUserScore } from "~/composables/shift_logs";
 import { ShiftLogType } from "~/server/utils/ShiftLogType";
@@ -19,8 +22,8 @@ const assignments: CollectivoAssignment[] = await directus.request(
 );
 
 assignments.sort((a, b) => {
-  const nextA = getNextOccurence(a.shifts_slot.shifts_shift);
-  const nextB = getNextOccurence(b.shifts_slot.shifts_shift);
+  const nextA = getNextOccurrence(a.shifts_slot.shifts_shift);
+  const nextB = getNextOccurrence(b.shifts_slot.shifts_shift);
   return nextA.start.toMillis() - nextB.start.toMillis();
 });
 
@@ -37,7 +40,7 @@ const pastAssignments: CollectivoAssignment[] = [];
 for (const assignment of assignments) {
   const from = DateTime.fromISO(assignment.shifts_from);
 
-  if (isAssignmentActive(assignment) || from > DateTime.now()) {
+  if (isShiftDurationModelActive(assignment) || from > DateTime.now()) {
     activeAndFutureAssignments.push(assignment);
   } else {
     pastAssignments.push(assignment);

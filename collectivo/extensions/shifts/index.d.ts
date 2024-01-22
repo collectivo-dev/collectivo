@@ -1,15 +1,6 @@
 import type { ShiftLogType } from "~/server/utils/ShiftLogType";
 
 declare global {
-  interface CollectivoShift {
-    id?: string;
-    shifts_name: string;
-    shifts_from: string;
-    shifts_to?: string;
-    shifts_duration: number;
-    shifts_repeats_every: number;
-  }
-
   interface CollectivoSlot {
     id: string;
     shifts_name: string;
