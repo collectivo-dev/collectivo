@@ -53,6 +53,9 @@ const nextOccurrence = getNextOccurrence(
           {{ to.toLocaleString(DateTime.DATE_SHORT) }} </span
         >)
       </p>
+      <p>
+        Assigned to slot : {{ props.shiftAssignment.shifts_slot.shifts_name }}
+      </p>
       <UAlert
         v-if="
           isShiftDurationModelActive(shiftAssignment) &&

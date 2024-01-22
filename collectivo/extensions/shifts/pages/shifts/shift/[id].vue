@@ -6,6 +6,10 @@ import { getNextOccurrences } from "~/composables/shifts";
 
 const route = useRoute();
 const directus = useDirectus();
+const user = useCollectivoUser();
+user.value.load();
+
+const toast = useToast();
 const shift: Ref<CollectivoShift> = ref(null);
 
 directus
@@ -14,8 +18,6 @@ directus
     shift.value = item;
   })
   .catch((error) => {
-    const toast = useToast();
-
     toast.add({
       title: "Shift data could not be loaded",
       description: error,
@@ -24,31 +26,34 @@ directus
     });
   });
 
-const nextOccurrences: Ref<ShiftOccurrence> = ref([]);
+const nextOccurrences: Ref<ShiftOccurrence[]> = ref([]);
 const shift_start: Ref<DateTime> = ref(null);
 const shift_end: Ref<DateTime> = ref(null);
 
 watch(shift, () => {
-  if (shift.value) {
-    shift_start.value = DateTime.fromISO(shift.value.shifts_from);
-
-    shift_end.value = shift_start.value.plus({
-      minutes: shift.value.shifts_duration,
-    });
-
-    setCollectivoTitle(
-      shift.value.shifts_name +
-        ", " +
-        shift_start.value.toLocaleString({ weekday: "long" }) +
-        " from " +
-        shift_start.value.toLocaleString(DateTime.TIME_SIMPLE) +
-        " to " +
-        shift_end.value.toLocaleString(DateTime.TIME_SIMPLE),
-    );
-
-    nextOccurrences.value = getNextOccurrences(shift.value, 5);
-  }
+  if (!shift.value) return;
+  setDetails();
 });
+
+function setDetails() {
+  shift_start.value = DateTime.fromISO(shift.value.shifts_from);
+
+  shift_end.value = shift_start.value.plus({
+    minutes: shift.value.shifts_duration,
+  });
+
+  setCollectivoTitle(
+    shift.value.shifts_name +
+      ", " +
+      shift_start.value.toLocaleString({ weekday: "long" }) +
+      " from " +
+      shift_start.value.toLocaleString(DateTime.TIME_SIMPLE) +
+      " to " +
+      shift_end.value.toLocaleString(DateTime.TIME_SIMPLE),
+  );
+
+  nextOccurrences.value = getNextOccurrences(shift.value, 5);
+}
 </script>
 
 <template>
@@ -66,6 +71,8 @@ watch(shift, () => {
       </li>
     </ul>
   </CollectivoContainer>
+
+  <AssignmentList v-if="shift && user.data" :shift="shift" :user="user.data" />
 
   <CollectivoContainer>
     <h1>Future occurrences</h1>
