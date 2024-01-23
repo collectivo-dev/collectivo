@@ -27,6 +27,9 @@ const calendarOptions = ref({
     hour12: false,
   },
   nowIndicator: true,
+  eventClick: (info) => {
+    navigateTo("/shifts/shift/" + info.event.extendedProps.shiftId);
+  },
 });
 
 const calendarRef = ref(null);
@@ -66,9 +69,11 @@ async function updateEvents(from, to) {
       start: occurrence.start.toJSDate(),
       end: occurrence.end.toJSDate(),
       allDay: false,
-      url: "/shifts/shift/" + occurrence.shift.id,
+      shiftId: occurrence.shift.id,
     });
   }
+
+  console.log(events[0].shiftId);
 
   calendarOptions.value.events = events;
 }
