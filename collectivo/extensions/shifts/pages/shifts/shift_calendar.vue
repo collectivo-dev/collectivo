@@ -2,6 +2,6 @@
 
 <template>
   <CollectivoContainer>
-    <Calendar />
+    <ShiftsCalendar />
   </CollectivoContainer>
 </template>

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { readItems } from "@directus/sdk";
-import AssignmentCard from "~/components/AssignmentCard.vue";
 import {
   getNextOccurrence,
   isShiftDurationModelActive,
@@ -109,22 +108,22 @@ function loadUserShiftDetails(user: CollectivoUser) {
   <CollectivoContainer>
     <h2>My current assignments</h2>
     <p v-if="!activeAndFutureAssignments.length">No current assignments</p>
-    <AssignmentCard
+    <ShiftsAssignmentCard
       v-for="assignment in activeAndFutureAssignments"
       :key="assignment.id"
       :shift-assignment="assignment"
     >
-    </AssignmentCard>
+    </ShiftsAssignmentCard>
   </CollectivoContainer>
 
   <CollectivoContainer v-if="pastAssignments.length">
     <h2>My past assignments</h2>
-    <AssignmentCard
+    <ShiftsAssignmentCard
       v-for="assignment in pastAssignments"
       :key="assignment.id"
       :shift-assignment="assignment"
     >
-    </AssignmentCard>
+    </ShiftsAssignmentCard>
   </CollectivoContainer>
 
   <CollectivoContainer v-if="logs.length">

@@ -76,7 +76,7 @@ async function updateEvents(from, to) {
 
 <template>
   <div id="dashboard-calendar" class="calendar">
-    <CalendarHeader :calendar-ref="calendarComputed()" />
+    <ShiftsCalendarHeader :calendar-ref="calendarComputed()" />
     <full-calendar ref="calendarRef" :options="calendarOptions" />
   </div>
 </template>

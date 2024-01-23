@@ -39,7 +39,7 @@ function loadAssignments() {
   <CollectivoContainer>
     <h1>My assignments to this shift</h1>
     <p v-if="assignments.length == 0">You have no assignment to this shift</p>
-    <AssignmentCard
+    <ShiftsAssignmentCard
       v-for="(assignment, i) in assignments"
       :key="i"
       :shift-assignment="assignment"

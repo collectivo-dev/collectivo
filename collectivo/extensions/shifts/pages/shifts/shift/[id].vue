@@ -63,18 +63,22 @@ function setDetails() {
     </ul>
   </CollectivoContainer>
 
-  <AssignmentList v-if="shift && user.data" :shift="shift" :user="user.data" />
+  <ShiftsAssignmentList
+    v-if="shift && user.data"
+    :shift="shift"
+    :user="user.data"
+  />
 
   <CollectivoContainer>
     <h1>Future occurrences</h1>
     <p v-if="nextOccurrences.length == 0">
       There are no occurrences of this shift in the future.
     </p>
-    <OccurrenceCard
+    <ShiftsOccurrenceCard
       v-for="(occurrence, i) in nextOccurrences"
       :key="i"
       :shift-occurrence="occurrence"
     >
-    </OccurrenceCard>
+    </ShiftsOccurrenceCard>
   </CollectivoContainer>
 </template>
