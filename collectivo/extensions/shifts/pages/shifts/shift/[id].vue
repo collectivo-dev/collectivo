@@ -8,8 +8,6 @@ const route = useRoute();
 const directus = useDirectus();
 const user = useCollectivoUser();
 user.value.load();
-
-const toast = useToast();
 const shift: Ref<CollectivoShift> = ref(null);
 
 directus
@@ -17,14 +15,7 @@ directus
   .then((item: CollectivoShift) => {
     shift.value = item;
   })
-  .catch((error) => {
-    toast.add({
-      title: "Shift data could not be loaded",
-      description: error,
-      icon: "i-mi-warning",
-      color: "red",
-    });
-  });
+  .catch((error) => showShiftToast("Shift data could not be loaded", error));
 
 const nextOccurrences: Ref<ShiftOccurrence[]> = ref([]);
 const shift_start: Ref<DateTime> = ref(null);

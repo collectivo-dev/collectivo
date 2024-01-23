@@ -12,43 +12,75 @@ import { ShiftLogType } from "~/server/utils/ShiftLogType";
 setCollectivoTitle("My shifts");
 const directus = useDirectus();
 const user = useCollectivoUser();
-await user.value.load();
 
-const assignments: CollectivoAssignment[] = await directus.request(
-  readItems("shifts_assignments", {
-    filter: { shifts_user: { _eq: user.value.data?.id } },
-    fields: "*,shifts_slot.*,shifts_slot.shifts_shift.*",
-  }),
-);
+const activeAndFutureAssignments: Ref<CollectivoAssignment[]> = ref([]);
+const pastAssignments: Ref<CollectivoAssignment[]> = ref([]);
+const skillsUserLinks = ref([]);
+const score = ref("loading...");
+const logs = ref([]);
 
-assignments.sort((a, b) => {
-  const nextA = getNextOccurrence(a.shifts_slot.shifts_shift);
-  const nextB = getNextOccurrence(b.shifts_slot.shifts_shift);
-  return nextA.start.toMillis() - nextB.start.toMillis();
-});
+user.value
+  .load()
+  .then((userStore: CollectivoUserStore) => {
+    loadAssignments(userStore.data);
+    loadUserShiftDetails(userStore.data);
+  })
+  .catch((error) => showShiftToast("Failed to load user data", error));
 
-const skillsUserLinks = await directus.request(
-  readItems("shifts_skills_directus_users", {
-    filter: { directus_users_id: { _eq: user.value.data?.id } },
-    fields: "*.*",
-  }),
-);
+function loadAssignments(user: CollectivoUser) {
+  directus
+    .request(
+      readItems("shifts_assignments", {
+        filter: { shifts_user: { _eq: user.id } },
+        fields: "*,shifts_slot.*,shifts_slot.shifts_shift.*",
+      }),
+    )
+    .then((assignments: CollectivoAssignment[]) => {
+      assignments.sort((a, b) => {
+        const nextA = getNextOccurrence(a.shifts_slot.shifts_shift);
+        const nextB = getNextOccurrence(b.shifts_slot.shifts_shift);
+        if (!nextA && !nextB) return 0;
+        if (!nextA) return 1;
+        if (!nextB) return -1;
+        return nextA.start.toMillis() - nextB.start.toMillis();
+      });
 
-const activeAndFutureAssignments: CollectivoAssignment[] = [];
-const pastAssignments: CollectivoAssignment[] = [];
+      for (const assignment of assignments) {
+        const from = DateTime.fromISO(assignment.shifts_from);
 
-for (const assignment of assignments) {
-  const from = DateTime.fromISO(assignment.shifts_from);
-
-  if (isShiftDurationModelActive(assignment) || from > DateTime.now()) {
-    activeAndFutureAssignments.push(assignment);
-  } else {
-    pastAssignments.push(assignment);
-  }
+        if (isShiftDurationModelActive(assignment) || from > DateTime.now()) {
+          activeAndFutureAssignments.value.push(assignment);
+        } else {
+          pastAssignments.value.push(assignment);
+        }
+      }
+    })
+    .catch((error) => showShiftToast("Failed to load assignments", error));
 }
 
-const score = await getUserScore(user.value.data!, DateTime.now());
-const logs = await getUserLogs(user.value.data!, DateTime.now());
+function loadUserShiftDetails(user: CollectivoUser) {
+  directus
+    .request(
+      readItems("shifts_skills_directus_users", {
+        filter: { directus_users_id: { _eq: user.id } },
+        fields: "*.*",
+      }),
+    )
+    .then((items) => skillsUserLinks.value.push(...items))
+    .catch((error) => showShiftToast("Failed to load skills", error));
+
+  getUserScore(user, DateTime.now())
+    .then((item) => {
+      score.value = item.toString();
+    })
+    .catch((error) => showShiftToast("Failed to load score", error));
+
+  getUserLogs(user, DateTime.now())
+    .then((items) => {
+      logs.value.push(...items);
+    })
+    .catch((error) => showShiftToast("Failed to load logs", error));
+}
 </script>
 
 <template>
@@ -56,18 +88,20 @@ const logs = await getUserLogs(user.value.data!, DateTime.now());
     <h2>Status</h2>
     <CollectivoCard>
       <template #content>
-        <p>My type : {{ user.data["shifts_user_type"] }}</p>
-        <p>
-          <span>My skills: </span>
-          <span v-if="!skillsUserLinks.length">None</span>
-          <span v-for="(link, index) in skillsUserLinks" :key="link.id">
-            <span v-if="index !== 0">, </span>
-            <span>{{ link.shifts_skills_id.shifts_name }}</span>
-          </span>
-        </p>
-        <p>
-          <span>My score: {{ score }}</span>
-        </p>
+        <div v-if="user.data">
+          <p>My type : {{ user.data["shifts_user_type"] }}</p>
+          <p>
+            <span>My skills: </span>
+            <span v-if="!skillsUserLinks.length">None</span>
+            <span v-for="(link, index) in skillsUserLinks" :key="link.id">
+              <span v-if="index !== 0">, </span>
+              <span>{{ link.shifts_skills_id.shifts_name }}</span>
+            </span>
+          </p>
+          <p>
+            <span>My score: {{ score }}</span>
+          </p>
+        </div>
       </template>
     </CollectivoCard>
   </CollectivoContainer>

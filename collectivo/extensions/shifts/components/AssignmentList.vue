@@ -14,8 +14,6 @@ const props = defineProps({
 });
 
 const directus = useDirectus();
-const toast = useToast();
-
 const assignments: Ref<CollectivoAssignment[]> = ref([]);
 loadAssignments();
 
@@ -33,14 +31,7 @@ function loadAssignments() {
     .then((items: CollectivoAssignment[]) => {
       assignments.value = items;
     })
-    .catch((error) => {
-      toast.add({
-        title: "Assignment data could not be loaded",
-        description: error,
-        icon: "i-mi-warning",
-        color: "red",
-      });
-    });
+    .catch((error) => showShiftToast("Failed to load assignments", error));
 }
 </script>
 
