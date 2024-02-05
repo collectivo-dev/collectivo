@@ -1,4 +1,4 @@
-import { DirectusUser } from "@directus/sdk";
+import { DirectusUser, DirectusRole } from "@directus/sdk";
 
 declare global {
   // Database schema
@@ -21,6 +21,7 @@ declare global {
     first_name: string;
     last_name: string;
     email: string;
+    role?: DirectusRole;
     [key: string]: string | undefined;
   }
 
@@ -30,10 +31,21 @@ declare global {
     collectivo_members: CollectivoMember[] | number[];
   }
 
+  interface CollectivoTileButton {
+    id: number;
+    collectivo_label: string;
+    collectivo_path: string;
+    collectivo_is_external: boolean;
+  }
+
   interface CollectivoTile {
     id: number;
     name: string;
     content: string;
+    status: "published" | "draft" | "archived";
+    sort: number;
+    collectivo_buttons: CollectivoTileButton[];
+    collectivo_color: string;
   }
 
   interface CollectivoExtension {
@@ -67,7 +79,7 @@ declare global {
     target?: string; // Default "_self"
     order?: number; // Default 100
     hideOnMobile?: boolean; // Default false
-    filter?: (item: CollectivoMenuItem) => boolean;
+    filter?: (item: CollectivoMenuItem) => Promise<boolean> | boolean;
   }
 
   // Forms
@@ -161,10 +173,17 @@ declare global {
     // TODO: Add operator?: "==" | "!=" | ">" | "<" | ">=" | "<=";
   }
 
-  interface FormValidator {
-    type: "min" | "max" | "email" | "url" | "regex";
-    value?: string | number | RegExp;
-  }
+  type FormValidator =
+    | {
+        type: "min" | "max" | "email" | "url" | "regex";
+        value?: string | number | RegExp;
+        message?: string;
+      }
+    | {
+        type: "test" | "transform";
+        value: string;
+        message?: string;
+      };
 }
 
 // Types for input of app.config.ts

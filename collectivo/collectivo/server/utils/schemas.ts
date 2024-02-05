@@ -1,14 +1,15 @@
 import {
-  DirectusCollection,
-  DirectusField,
   DirectusFlow,
   DirectusOperation,
   DirectusPermission,
+} from "@directus/sdk";
+import {
+  DirectusCollection,
+  DirectusField,
   DirectusRelation,
   DirectusRole,
   NestedPartial,
 } from "@directus/sdk";
-import { createOrUpdateDirectusRole } from "./directusQueries";
 
 // Create a new schema
 // This defines the database structure of an extension
@@ -24,8 +25,16 @@ export interface ExtensionDependency {
   version: string;
 }
 
-export interface CollectivoFlow extends NestedPartial<DirectusFlow<any>> {
-  collectivoEndpoint?: string;
+export interface DirectusOperationWrapper {
+  operation: Partial<DirectusOperation<any>>;
+  reject?: string;
+  resolve?: string;
+}
+
+export interface DirectusFlowWrapper {
+  flow: Partial<DirectusFlow<any>>;
+  firstOperation?: string;
+  operations?: DirectusOperationWrapper[];
 }
 
 export class ExtensionSchema {
@@ -39,9 +48,8 @@ export class ExtensionSchema {
   fields: NestedPartial<DirectusField<any>>[];
   relations: NestedPartial<DirectusRelation<any>>[];
   roles: NestedPartial<DirectusRole<any>>[];
-  permissions: NestedPartial<DirectusPermission<any>>[];
-  flows: CollectivoFlow[];
-  operations: NestedPartial<DirectusOperation<any>>[];
+  permissions: Partial<DirectusPermission<any>>[];
+  flows: DirectusFlowWrapper[];
   translations: any[];
 
   constructor(extension: string, version: string) {
@@ -54,7 +62,6 @@ export class ExtensionSchema {
     this.roles = [];
     this.permissions = [];
     this.flows = [];
-    this.operations = [];
     this.translations = [];
 
     this.run_before = () => Promise.resolve();
@@ -84,29 +91,23 @@ export class ExtensionSchema {
     );
   };
 
-  createO2MRelation = (
-    CollectionOne: string,
-    CollectionMany: string,
-    ForeignKey: string,
-    Settings?: directusO2MSettings,
+  createForeignKey = (
+    CollectionKey: string,
+    CollectionAlias: string,
+    settings?: directusO2MSettings,
   ) => {
-    createO2MRelation(
-      this,
-      CollectionOne,
-      CollectionMany,
-      ForeignKey,
-      Settings,
+    createForeignKey(this, CollectionKey, CollectionAlias, settings);
+  };
+
+  createO2MRelation = () => {
+    throw new Error(
+      "schema.createO2MRelation deprecated. pls use createForeignKey",
     );
   };
 
   apply = async () => {
     for (const collection of this.collections) {
-      await createOrUpdateDirectusCollection(
-        collection,
-        [],
-        [],
-        this.extension,
-      );
+      await createOrUpdateDirectusCollection(collection, [], []);
     }
 
     for (const field of this.fields) {
@@ -123,6 +124,10 @@ export class ExtensionSchema {
 
     for (const role of this.roles) {
       await createOrUpdateDirectusRole(role, this.extension);
+    }
+
+    for (const flow of this.flows) {
+      await createOrUpdateDirectusFlow(flow);
     }
 
     for (const permission of this.permissions) {
@@ -154,7 +159,6 @@ export function combineSchemas(
     combinedSchema.relations.push(...schema.relations);
     combinedSchema.permissions.push(...schema.permissions);
     combinedSchema.flows.push(...schema.flows);
-    combinedSchema.operations.push(...schema.operations);
     combinedSchema.translations.push(...schema.translations);
   }
 
@@ -227,7 +231,7 @@ function createM2MRelation(
   schema.collections.push({
     collection: m2mCollectionName,
     meta: { hidden: true, icon: "import_export" },
-    schema: directusCollectionSchema(),
+    schema: { name: m2mCollectionName },
   });
 
   schema.fields.push({
@@ -277,41 +281,66 @@ function createM2MRelation(
 }
 
 interface directusO2MSettings {
-  collectionManyFieldType?: string;
-  template?: string;
+  fieldKey?: NestedPartial<DirectusField<any>>;
+  fieldAlias?: NestedPartial<DirectusField<any>>;
+  relation?: NestedPartial<DirectusRelation<any>>;
 }
 
-export async function createO2MRelation(
+// CollectionOne has the Alias Field - Can have many of CollectionAlias
+// CollectionAlias has the Foreign Key - Can have one of CollectionOne
+export async function createForeignKey(
   schema: ExtensionSchema,
-  CollectionOne: string,
-  CollectionMany: string,
-  ForeignKey: string,
+  CollectionKey: string,
+  CollectionAlias: string,
   settings?: directusO2MSettings,
 ) {
+  const fieldKeyName = settings?.fieldKey?.field || CollectionAlias;
+  const fieldKey = settings?.fieldKey || {};
+
   schema.fields.push({
-    collection: CollectionOne,
-    field: ForeignKey,
-    type: settings?.collectionManyFieldType ?? "integer",
+    collection: CollectionKey,
+    field: fieldKeyName,
+    type: "integer",
     schema: {},
+    ...fieldKey,
     meta: {
       interface: "select-dropdown-m2o",
-      special: ["m2o"],
-      display: "related-values",
-      display_options: { template: settings?.template },
+      ...fieldKey?.meta,
     },
   });
 
-  schema.relations.push({
-    collection: CollectionOne,
-    field: ForeignKey,
-    related_collection: CollectionMany,
+  const relation = {
+    collection: CollectionKey,
+    field: fieldKeyName,
+    related_collection: CollectionAlias,
+    ...settings?.relation,
     meta: {
       sort_field: null,
-      display: "related-values",
-      display_options: { template: settings?.template },
+      ...settings?.relation?.meta,
     },
-    schema: { on_delete: "SET NULL" },
-  });
+    schema: { on_delete: "SET NULL", ...settings?.relation?.schema },
+  };
+
+  if (settings?.fieldAlias) {
+    const fieldAliasName = settings?.fieldAlias?.field || CollectionKey;
+    const fieldAlias = settings?.fieldAlias || {};
+
+    schema.fields.push({
+      collection: CollectionAlias,
+      field: fieldAliasName,
+      type: "alias",
+      ...fieldAlias,
+      meta: {
+        interface: "list-o2m",
+        special: ["o2m"],
+        ...fieldAlias?.meta,
+      },
+    });
+
+    relation.meta.one_field = fieldAliasName;
+  }
+
+  schema.relations.push(relation);
 }
 
 export async function createM2ARelation(

@@ -6,7 +6,6 @@ import PageTitle from "./PageTitle.vue";
 <template>
   <div class="mobile-header">
     <PageTitle />
-    <Logo hide-label />
   </div>
 </template>
 

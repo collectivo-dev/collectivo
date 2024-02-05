@@ -22,7 +22,9 @@ class CollectivoTileStore {
     const directus = useDirectus();
 
     try {
-      this.data = await directus.request(readItems("collectivo_tiles"));
+      this.data = await directus.request(
+        readItems("collectivo_tiles", { fields: ["*.*"] }),
+      );
     } catch (error) {
       this.error = error;
     }

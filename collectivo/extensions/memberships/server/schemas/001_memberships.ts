@@ -40,21 +40,7 @@ schema.collections = [
   },
   {
     collection: "memberships_types",
-    schema: {
-      schema: "schema",
-      name: "schema",
-      comment: null,
-    },
-    fields: [
-      {
-        field: "id",
-        type: "string",
-        schema: {
-          is_primary_key: true,
-          has_auto_increment: false,
-        },
-      },
-    ],
+    schema: { name: "memberships_types" },
     meta: {
       sort: 10,
       group: "collectivo_settings",
@@ -79,44 +65,6 @@ schema.collections = [
 ];
 
 schema.fields = [
-  {
-    collection: "memberships",
-    field: "memberships_user",
-    type: "uuid",
-    schema: {},
-    meta: {
-      interface: "select-dropdown-m2o",
-      special: ["m2o"],
-      width: "half",
-      display: "related-values",
-      display_options: {
-        template: "{{first_name}} {{last_name}}",
-      },
-      translations: [
-        { language: "de-DE", translation: "Person" },
-        { language: "en-US", translation: "Person" },
-      ],
-    },
-  },
-  {
-    collection: "memberships",
-    field: "memberships_type",
-    type: "string",
-    schema: {},
-    meta: {
-      interface: "select-dropdown-m2o",
-      special: ["m2o"],
-      width: "half",
-      display: "related-values",
-      display_options: {
-        template: "{{name}}",
-      },
-      translations: [
-        { language: "de-DE", translation: "Typ" },
-        { language: "en-US", translation: "Type" },
-      ],
-    },
-  },
   {
     collection: "memberships",
     field: "memberships_status",
@@ -244,8 +192,12 @@ schema.fields = [
   },
   {
     collection: "memberships",
-    field: "memberhships_shares",
+    field: "memberships_shares",
     type: "integer",
+    schema: {
+      is_nullable: false,
+      default_value: 0,
+    },
     meta: {
       interface: "input",
       width: "half",
@@ -265,106 +217,65 @@ schema.fields = [
   ...directusSystemFields("memberships_types"),
 ];
 
-schema.translations = [
-  { language: "de-DE", key: "applied", value: "Beworben" },
-  { language: "de-DE", key: "approved", value: "Aufgenommen" },
-  {
-    language: "de-DE",
-    key: "in-cancellation",
-    value: "Im Ausstieg",
-  },
-  {
-    language: "de-DE",
-    key: "in-exclusion",
-    value: "Im Ausschluss",
-  },
-  { language: "de-DE", key: "ended", value: "Beendet" },
-
-  { language: "en-US", key: "applied", value: "Applied" },
-  { language: "en-US", key: "approved", value: "Approved" },
-  {
-    language: "en-US",
-    key: "in-cancellation",
-    value: "In cancellation",
-  },
-  {
-    language: "en-US",
-    key: "in-exclusion",
-    value: "In exclusion",
-  },
-  { language: "en-US", key: "ended", value: "Ended" },
-
-  {
-    language: "de-DE",
-    key: "memberships-status-note",
-    value:
-      "Bezeichnet den Lebenszyklus einer Mitgliedschaft von der Bewerbung bis zum Ende. Der Ausstieg erfolgt durch das Mitglied, der Ausschluss durch die Organisation. Während des Ausstiegs- oder Ausschlussverfahrens sind die Mitgliedschaften weiterhin aktiv. Wenn dieser Vorgang abgeschlossen ist, sollte der Status auf 'Beendet' gesetzt werden.",
-  },
-  {
-    language: "en-US",
-    key: "memberships-status-note",
-    value:
-      "Signifies the lifecycle of a membership from applied to ended. Cancellation is initiated by the member, exclusion is initiated by the organisation. During the process of cancellation or exclusion, memberships are still active. When this process is finished, the status should be set to 'Ended'.",
-  },
-];
-
-schema.relations = [
-  {
-    collection: "memberships",
+schema.createForeignKey("memberships", "directus_users", {
+  fieldKey: {
     field: "memberships_user",
-    related_collection: "directus_users",
-    meta: { sort_field: null },
-    schema: { on_delete: "SET NULL" },
-  },
-  {
-    collection: "memberships",
-    field: "memberships_type",
-    related_collection: "memberships_types",
-    meta: { sort_field: null },
-    schema: { on_delete: "NO ACTION" },
-  },
-];
-
-schema.flows = [
-  {
-    name: "memberships_shares_invoices",
-    icon: "receipt",
-    color: null,
-    description: null,
-    status: "active",
-    accountability: "all",
-    trigger: "event",
-    options: {
-      type: "filter",
-      scope: ["items.update", "items.create"],
-      collections: ["memberships"],
+    type: "uuid",
+    schema: {
+      is_nullable: false,
     },
-    collectivoEndpoint: "/api/memberships/create-shares-invoice",
+    meta: {
+      interface: "select-dropdown-m2o",
+      special: ["m2o"],
+      width: "half",
+      required: true,
+      display: "related-values",
+      display_options: {
+        template: "{{first_name}} {{last_name}}",
+      },
+      translations: [
+        { language: "de-DE", translation: "Person" },
+        { language: "en-US", translation: "Person" },
+      ],
+    },
   },
-];
+});
 
-schema.permissions = [
-  {
-    collection: "memberships",
-    roleName: "collectivo_editor",
-    action: "read",
-    fields: ["*"],
+schema.createForeignKey("memberships", "memberships_types", {
+  fieldKey: {
+    field: "memberships_type",
+    schema: {
+      is_nullable: false,
+    },
+    meta: {
+      interface: "select-dropdown-m2o",
+      special: ["m2o"],
+      width: "half",
+      required: true,
+      display: "related-values",
+      display_options: {
+        template: "{{name}}",
+      },
+      translations: [
+        { language: "de-DE", translation: "Typ" },
+        { language: "en-US", translation: "Type" },
+      ],
+    },
   },
-  {
-    collection: "memberships",
-    roleName: "collectivo_editor",
-    action: "update",
-    fields: ["*"],
-  },
-  {
-    collection: "memberships_types",
-    roleName: "collectivo_editor",
-    action: "read",
-    fields: ["*"],
-  },
-];
+});
 
-// TODO: Make optional
+schema.createForeignKey("memberships_types", "payments_items", {
+  fieldKey: {
+    field: "memberships_shares_item",
+    meta: {
+      translations: [
+        { language: "de-DE", translation: "Anteile Item" },
+        { language: "en-US", translation: "Shares Item" },
+      ],
+    },
+  },
+});
+
 // Add a relation to the payments extension
 schema.fields.push(
   ...[
@@ -408,3 +319,264 @@ schema.relations.push(
     },
   ],
 );
+
+// # Flows
+schema.flows.push({
+  flow: {
+    name: "memberships_create_invoice_for_shares",
+    icon: "receipt",
+    status: "active",
+    trigger: "event",
+    accountability: "all",
+    options: {
+      type: "action",
+      scope: ["items.create"],
+      collections: ["memberships"],
+    },
+  },
+  firstOperation: "updateMembership",
+  operations: [
+    {
+      operation: {
+        name: "updateMembership",
+        key: "updateMembership",
+        type: "item-update",
+        position_x: 19,
+        position_y: 1,
+        options: {
+          collection: "memberships",
+          payload: {
+            memberships_shares: "{{$trigger.payload.memberships_shares}}",
+          },
+          emitEvents: true,
+          key: ["{{$trigger.key}}"],
+        },
+      },
+    },
+  ],
+});
+
+schema.flows.push({
+  flow: {
+    name: "memberships_update_invoice_for_shares",
+    icon: "receipt",
+    status: "active",
+    trigger: "event",
+    accountability: "all",
+    options: {
+      type: "filter",
+      scope: ["items.update"],
+      collections: ["memberships"],
+    },
+  },
+  firstOperation: "checkHasShares",
+  operations: [
+    {
+      operation: {
+        name: "checkHasShares",
+        key: "checkHasShares",
+        type: "exec",
+        position_x: 19,
+        position_y: 1,
+        options: {
+          code: 'module.exports = async function(data) {\n\tconsole.log("prepareInvoice")\n\tconsole.log(data["$trigger"])\n\tif (!("memberships_shares" in data["$trigger"].payload)) {\n\t\tthrow new Error("No shares in payload")\n    }\n\treturn {}\n}',
+        },
+      },
+      resolve: "checkIsBulk",
+      reject: "endFlowWithoutBlocking",
+    },
+    {
+      operation: {
+        name: "endFlowWithoutBlocking",
+        key: "endFlowWithoutBlocking",
+        type: "exec",
+        position_x: 3,
+        position_y: 20,
+        options: {
+          code: 'module.exports = async function(data) {\n\t// Do nothing, just to let the reject path pass without blocking\n    console.log("has no shares")\n\treturn {};\n}',
+        },
+      },
+    },
+    {
+      operation: {
+        name: "checkIsBulk",
+        key: "checkIsBulk",
+        type: "exec",
+        position_x: 37,
+        position_y: 1,
+        options: {
+          code: 'module.exports = async function(data) {\n\tif (data["$trigger"].keys.length != 1) {\n\t\tconsole.log("multiple keys in payload")\n    \tthrow new Error("Memberships invoice flow: Cannot bulk edit shares")\n\t}\n\treturn {}\n}',
+        },
+      },
+      resolve: "readMembership",
+    },
+    {
+      operation: {
+        name: "readMembership",
+        key: "readMembership",
+        type: "item-read",
+        position_x: 20,
+        position_y: 20,
+        options: {
+          collection: "memberships",
+          key: ["{{$trigger.keys[0]}}"],
+          permissions: "$full",
+          query: {
+            fields: [
+              "memberships_user",
+              "memberships_type.memberships_shares_item.*",
+            ],
+          },
+        },
+      },
+      resolve: "readSharesEntries",
+    },
+    {
+      operation: {
+        name: "readSharesEntries",
+        key: "readSharesEntries",
+        type: "item-read",
+        position_x: 37,
+        position_y: 20,
+        options: {
+          collection: "payments_invoices_entries",
+          query: {
+            filter: {
+              payments_invoice: {
+                memberships_membership: "{{$trigger.keys[0]}}",
+              },
+              payments_item:
+                "{{readMembership.memberships_type.memberships_shares_item.id}}",
+            },
+          },
+        },
+      },
+      resolve: "calcShares",
+    },
+    {
+      operation: {
+        name: "calcShares",
+        key: "calcShares",
+        type: "exec",
+        position_x: 3,
+        position_y: 38,
+        options: {
+          code: 'module.exports = async function(data) {\n\tconsole.log("calcShares")\n    let sharesInvoiced = 0\n    console.log(data["readSharesEntries"])\n    for (i in data["readSharesEntries"]) {\n        entry = data["readSharesEntries"][i]\n        console.log("entry", entry)\n    \tsharesInvoiced = sharesInvoiced + entry.payments_quantity\n\t}\n\tsharesTotal = data["$trigger"].payload.memberships_shares\n\tsharesToBeInvoiced = sharesTotal - sharesInvoiced\n\tconsole.log("sharesToBeInvoiced", sharesToBeInvoiced)\n\treturn {sharesToBeInvoiced};\n}',
+        },
+      },
+      resolve: "createInvoice",
+    },
+    {
+      operation: {
+        name: "createInvoice",
+        key: "createInvoice",
+        type: "item-create",
+        position_x: 21,
+        position_y: 38,
+        options: {
+          collection: "payments_invoices_out",
+          permissions: "$full",
+          payload: {
+            payments_recipient_user: "{{readMembership.memberships_user}}",
+            payments_status: "pending",
+            memberships_membership: "{{$trigger.keys[0]}}",
+          },
+        },
+      },
+      resolve: "createInvoiceEntries",
+    },
+    {
+      operation: {
+        name: "createInvoiceEntries",
+        key: "createInvoiceEntries",
+        type: "item-create",
+        position_x: 41,
+        position_y: 38,
+        options: {
+          collection: "payments_invoices_entries",
+          permissions: "$full",
+          payload: {
+            payments_invoice: "{{createInvoice[0]}}",
+            payments_item:
+              "{{readMembership.memberships_type.memberships_shares_item.id}}",
+            payments_quantity: "{{calcShares.sharesToBeInvoiced}}",
+            payments_price:
+              "{{readMembership.memberships_type.memberships_shares_item.payments_price}}",
+          },
+        },
+      },
+    },
+  ],
+});
+
+// ----------------------------------------------------------------------------
+// Permissions ----------------------------------------------------------------
+// ----------------------------------------------------------------------------
+
+schema.permissions = [
+  {
+    collection: "memberships",
+    roleName: "collectivo_editor",
+    action: "read",
+    fields: ["*"],
+  },
+  {
+    collection: "memberships",
+    roleName: "collectivo_editor",
+    action: "update",
+    fields: ["*"],
+  },
+  {
+    collection: "memberships_types",
+    roleName: "collectivo_editor",
+    action: "read",
+    fields: ["*"],
+  },
+];
+
+// ----------------------------------------------------------------------------
+// Translations ---------------------------------------------------------------
+// ----------------------------------------------------------------------------
+
+schema.translations = [
+  { language: "de-DE", key: "applied", value: "Beworben" },
+  { language: "de-DE", key: "approved", value: "Aufgenommen" },
+  {
+    language: "de-DE",
+    key: "in-cancellation",
+    value: "Im Ausstieg",
+  },
+  {
+    language: "de-DE",
+    key: "in-exclusion",
+    value: "Im Ausschluss",
+  },
+  { language: "de-DE", key: "ended", value: "Beendet" },
+
+  { language: "en-US", key: "applied", value: "Applied" },
+  { language: "en-US", key: "approved", value: "Approved" },
+  {
+    language: "en-US",
+    key: "in-cancellation",
+    value: "In cancellation",
+  },
+  {
+    language: "en-US",
+    key: "in-exclusion",
+    value: "In exclusion",
+  },
+  { language: "en-US", key: "ended", value: "Ended" },
+
+  {
+    language: "de-DE",
+    key: "memberships-status-note",
+    value:
+      "Bezeichnet den Lebenszyklus einer Mitgliedschaft von der Bewerbung bis zum Ende. Der Ausstieg erfolgt durch das Mitglied, der Ausschluss durch die Organisation. Während des Ausstiegs- oder Ausschlussverfahrens sind die Mitgliedschaften weiterhin aktiv. Wenn dieser Vorgang abgeschlossen ist, sollte der Status auf 'Beendet' gesetzt werden.",
+  },
+  {
+    language: "en-US",
+    key: "memberships-status-note",
+    value:
+      "Signifies the lifecycle of a membership from applied to ended. Cancellation is initiated by the member, exclusion is initiated by the organisation. During the process of cancellation or exclusion, memberships are still active. When this process is finished, the status should be set to 'Ended'.",
+  },
+];

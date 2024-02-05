@@ -7,20 +7,17 @@ export default <Partial<Config>>{
         black: "#0F1A2B",
         white: "#ffffff",
 
-        // This will be renamed to primary by nuxt-ui
-        // 500 matches purple-900 (collectivo logo color)
-        // See https://ui.nuxt.com/getting-started/theming
-        "ui-primary": {
+        meteorite: {
           "50": "#ededff",
           "100": "#dedeff",
           "200": "#c6c4ff",
           "300": "#a6a0ff",
-          "400": "#8e7aff", // Primary color (dark mode)
-          "500": "#3b2476", // Primary color (light mode)
-          "600": "#28184e",
-          "700": "#28184e",
-          "800": "#28184e",
-          "900": "#28184e",
+          "400": "#8e7aff",
+          "500": "#7d5afa",
+          "600": "#723cef",
+          "700": "#632fd3",
+          "800": "#5129aa",
+          "900": "#3b2476",
           "950": "#28184e",
         },
 
@@ -80,6 +77,20 @@ export default <Partial<Config>>{
           "950": "#3e1111",
         },
 
+        pink: {
+          "50": "#fcf6fd",
+          "100": "#f9ebfc",
+          "200": "#f4dbf8",
+          "300": "#ebb7f0",
+          "400": "#df8ce6",
+          "500": "#cd5fd6",
+          "600": "#b340b9",
+          "700": "#963299",
+          "800": "#7c2a7e",
+          "900": "#682768",
+          "950": "#430f43",
+        },
+
         gray: {
           "50": "#f6f7f8",
           "100": "#ebecee",
@@ -93,20 +104,6 @@ export default <Partial<Config>>{
           "900": "#505258",
           "950": "#333438",
         },
-
-        purple: {
-          "50": "#ededff",
-          "100": "#dedeff",
-          "200": "#c6c4ff",
-          "300": "#a6a0ff",
-          "400": "#8e7aff",
-          "500": "#7d5afa",
-          "600": "#723cef",
-          "700": "#632fd3",
-          "800": "#5129aa",
-          "900": "#3b2476",
-          "950": "#28184e",
-        },
       },
       boxShadow: {
         sidebar: "0px 0px 48px 0px rgba(220, 226, 239, 0.50)",
@@ -117,9 +114,6 @@ export default <Partial<Config>>{
         "2xl": ["1.5rem", { lineHeight: "30px" }],
         "3xl": ["1.625rem", { lineHeight: "32px" }],
         "4xl": ["1.875rem", { lineHeight: "36px" }],
-      },
-      fontFamily: {
-        urbanist: '"Urbanist", sans-serif',
       },
     },
   },

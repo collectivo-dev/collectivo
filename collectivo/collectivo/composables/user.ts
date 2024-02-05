@@ -27,13 +27,13 @@ class CollectivoUserStore {
   }
 
   async load(force: boolean = false) {
-    const { $directus } = useNuxtApp();
+    const directus = useDirectus();
     if (!force && this.data) return this;
     this.loading = true;
 
-    this.data = (await $directus?.request(
+    this.data = (await directus.request(
       readMe({
-        // fields: ["id", "first_name", "last_name", "email"],
+        fields: ["*", "role.*"],
       }),
     )) as CollectivoUser;
 

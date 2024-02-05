@@ -16,41 +16,24 @@ import {
   readPermissions,
   createRole,
   DirectusRole,
-  readItems,
-  createItem,
   DirectusTranslation,
   createTranslation,
   updateTranslation,
   readTranslations,
+  readFlows,
+  createFlow,
+  updateFlow,
+  readOperations,
+  DirectusOperation,
+  createOperation,
+  updateOperation,
 } from "@directus/sdk";
-
-async function addItemtoExtension(
-  extension: string,
-  collection: string,
-  item: any,
-) {
-  const directus = await useDirectusAdmin();
-  const extsDb = await directus.request(readItems("collectivo_extensions"));
-  const extDb = extsDb.find((ext) => ext.name === extension);
-
-  if (!extDb) {
-    throw new Error(`Could not find extension "${extension}"`);
-  }
-
-  await directus.request(
-    createItem("collectivo_extensions_items", {
-      collection: collection,
-      item: item,
-      collectivo_extensions_id: extDb.id,
-    }),
-  );
-}
+import { DirectusFlowWrapper } from "./schemas";
 
 export async function createOrUpdateDirectusCollection(
   collection: NestedPartial<DirectusCollection<any>>,
   fields?: NestedPartial<DirectusField<any>>[],
   relations?: NestedPartial<DirectusRelation<any>>[],
-  extension?: string,
 ) {
   if (!collection.collection) {
     throw new Error("Collection name is required");
@@ -60,14 +43,6 @@ export async function createOrUpdateDirectusCollection(
 
   try {
     await directus.request(createCollection(collection));
-
-    if (extension) {
-      await addItemtoExtension(
-        extension,
-        "directus_collections",
-        collection.collection,
-      );
-    }
 
     console.log(`Created collection "${collection.collection}"`);
   } catch (e) {
@@ -143,10 +118,6 @@ export async function createOrUpdateDirectusField(
     const fieldDB = await directus.request(
       createField(field.collection, field),
     );
-
-    if (extension) {
-      await addItemtoExtension(extension, "directus_fields", fieldDB.id);
-    }
 
     console.log(`Created field "${field.field} in "${field.collection}"`);
   } catch (e) {
@@ -241,6 +212,102 @@ export async function createOrUpdateDirectusRole(
   // }
 }
 
+export async function createOrUpdateDirectusFlow(flow: DirectusFlowWrapper) {
+  const directus = await useDirectusAdmin();
+  let flowId: string;
+
+  // See if flow already exists
+  const flowsDb = await directus.request(
+    readFlows({
+      filter: {
+        name: { _eq: flow.flow.name },
+      },
+    }),
+  );
+
+  // Create flow if it doesn't exist
+  if (flowsDb.length === 0) {
+    flowId = (await directus.request(createFlow(flow.flow))).id;
+  }
+
+  // Update flow if it exists
+  else {
+    flowId = flowsDb[0].id;
+    await directus.request(updateFlow(flowId, flow.flow));
+  }
+
+  // Add operation to flow
+  const operationIds: Record<string, string> = {};
+
+  for (const operation of flow.operations ?? []) {
+    operation.operation.flow = flowId;
+
+    const operationId = await createOrUpdateDirectusOperation(
+      operation.operation,
+    );
+
+    if (operation.operation.key) {
+      operationIds[operation.operation.key] = operationId;
+    }
+  }
+
+  // Connect operations to another
+  if (flow.firstOperation) {
+    flow.flow.operation = operationIds[flow.firstOperation];
+    await directus.request(updateFlow(flowId, flow.flow));
+  }
+
+  for (const operation of flow.operations ?? []) {
+    if (!operation.operation.key) {
+      continue;
+    }
+
+    if (operation.reject) {
+      const payload = { reject: operationIds[operation.reject] };
+
+      await directus.request(
+        updateOperation(operationIds[operation.operation.key], payload),
+      );
+    }
+
+    if (operation.resolve) {
+      const payload = { resolve: operationIds[operation.resolve] };
+
+      await directus.request(
+        updateOperation(operationIds[operation.operation.key], payload),
+      );
+    }
+  }
+}
+
+export async function createOrUpdateDirectusOperation(
+  operation: Partial<DirectusOperation<any>>,
+): Promise<string> {
+  const directus = await useDirectusAdmin();
+
+  // See if operation already exists
+  const operationsDb = await directus.request(
+    readOperations({
+      filter: {
+        key: { _eq: operation.key },
+        flow: { _eq: operation.flow },
+      },
+    }),
+  );
+
+  // Create operation if it doesn't exist
+  if (operationsDb.length === 0) {
+    return (await directus.request(createOperation(operation))).id;
+  }
+
+  // Update operation if it exists
+  else {
+    const operationId = operationsDb[0].id;
+    await directus.request(updateOperation(operationId, operation));
+    return operationId;
+  }
+}
+
 export async function createOrUpdateDirectusTranslation(
   translation: NestedPartial<DirectusTranslation<any>>,
 ) {
@@ -265,7 +332,7 @@ export async function createOrUpdateDirectusTranslation(
 }
 
 export async function createOrUpdateDirectusPermission(
-  permission: NestedPartial<DirectusPermission<any>>,
+  permission: Partial<DirectusPermission<any>>,
   _extension: string,
 ) {
   const directus = await useDirectusAdmin();
@@ -302,29 +369,19 @@ export async function createOrUpdateDirectusPermission(
     const permissionDB = permissionsDB[0];
 
     // Merge fields
-    // @ts-ignore
     if (permission.override) {
       // todo: override fields
       console.warn("Override not implemented yet");
     } else if (permissionDB.fields == "*") {
-      permission.fields = "*";
-    } else if (
-      permission.fields != "*" &&
-      // @ts-ignore
-      permissionDB.fields != ["*"]
-    ) {
+      permission.fields = ["*"];
+    } else if (permissionDB.fields[0] !== "*") {
       if (typeof permission.fields == "string") {
-        // @ts-ignore
         permission.fields = [permission.fields];
       }
 
-      // console.log(permissionDB.fields, permission.fields);
-
-      // @ts-ignore
       permission.fields = [
         ...(permissionDB.fields ?? []),
-        // @ts-ignore
-        ...permission.fields,
+        ...(permission.fields ?? []),
       ];
     }
 

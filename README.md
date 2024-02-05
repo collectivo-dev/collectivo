@@ -289,25 +289,53 @@ export default schema;
 
 This class has the following attributes:
 
-- `extension: string`
-- `version: string`
-- `options: ExtensionSchemaOptions`
-- `run_before: () => Promise<void>` -> Custom migration script to be run before applying this schema version
-- `run_after: () => Promise<void>` -> Custom migration script to be run after applying this schema version
-- `collections: NestedPartial<DirectusCollection<any>>[]`
-- `fields: NestedPartial<DirectusField<any>>[]`
-- `relations: NestedPartial<DirectusRelation<any>>[]` -> Can be created with the methods below.
-- `roles: NestedPartial<DirectusRole<any>>[]`
-- `permissions: NestedPartial<DirectusPermission<any>>[]`
-- `flows: NestedPartial<DirectusFlow<any>>[]`
-- `operations: NestedPartial<DirectusOperation<any>>[]`
-- `translations: any[]`
+- `extension`: String. Name of the extension.
+- `version`: String. The [semantic version](https://semver.org/) of the extension that this schema represents.
+- `dependencies`: Array of [`ExtensionDependency`]().
+- `run_before`: Async function. Custom migration script to be run before applying this schema version
+- `run_after`: Async function. Custom migration script to be run after applying this schema version
+- `collections`: Array of [`DirectusCollection`](https://docs.directus.io/reference/system/collections.html).
+- `fields`: Array of [`DirectusField`](https://docs.directus.io/reference/system/fields.html).
+- `relations`: Array of [`DirectusRelation`](https://docs.directus.io/reference/system/relations.html). See also the methods below.
+- `roles`: Array of [`DirectusRole`](https://docs.directus.io/reference/system/roles.html).
+- `permissions`: Array of [`DirectusPermission`](https://docs.directus.io/reference/system/permissions.html).
+- `flows`: Array of [`DirectusFlowWrapper`](#directusflowwrapper). Define automated workflows.
+- `translations`: Array of [`DirectusTranslation`](https://docs.directus.io/reference/system/translations.html)
 
 And the following methods:
 
 - `createO2MRelation()` - Utility method to create a [One-to-Many](https://docs.directus.io/app/data-model/relationships.html#one-to-many-o2m) relationship
 - `createM2MRelation()` - Utility method to create a [Many-to_many](https://docs.directus.io/app/data-model/relationships.html#many-to-many-m2m) relationship
 - `createM2ARelation()` - Utility method to create a [Many-to-Any](https://docs.directus.io/app/data-model/relationships.html#many-to-any-m2a) relationship
+
+### `ExtensionDependency`
+
+This type can be used to define dependencies of a schema on another extension.
+
+Attributes:
+
+- `extension`: String. The extension that the schema depends on.
+- `version`: String. The [semantic version](https://semver.org/) of the extension that the schema depends on.
+
+### `DirectusFlowWrapper`
+
+This type can be used to construct directus flows in a schema.
+
+Attributes:
+
+- `flow: Partial<DirectusFlow<<any>>` - this will define the trigger, see [directus flow](https://docs.directus.io/reference/system/flows.html)
+- `firstOperation: string` - key of the initial operation to be performed
+- `operations: DirectusOperationWrapper[]` - define a list of connected operations
+
+### `DirectusOperationWrapper`
+
+This type can be used to define operations within [DirectusFlowWrapper](#directusflowwrapper).
+
+Attributes:
+
+- `operation: Partial<DirectusOperation<<any>>` - see [directus operation](https://docs.directus.io/reference/system/operations.html)
+- `resolve: string` - key of the operation to execute when this one is resolved
+- `reject: string` - key of the operation to execute when this one is rejected
 
 ### `useDirectusAdmin`
 

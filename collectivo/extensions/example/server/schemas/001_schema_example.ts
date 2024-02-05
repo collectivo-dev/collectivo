@@ -5,15 +5,16 @@ const schema = initSchema("example", "0.0.1");
 export default schema;
 
 // Here you can define collections for your database
+// If no schema is passed, it will be interpreted as a folder
 // See https://docs.directus.io/reference/system/collections.html
 schema.collections = [
   {
-    collection: "examples",
-    schema: {
-      schema: "schema",
-      name: "schema",
-      comment: null,
-    },
+    collection: "example_collection",
+    schema: { name: "example_collection" },
+    meta: { group: "example_folder" },
+  },
+  {
+    collection: "example_folder",
     meta: {},
   },
 ];
@@ -23,7 +24,7 @@ schema.collections = [
 schema.fields = [
   ...directusSystemFields("example"),
   {
-    collection: "example",
+    collection: "example_collection",
     field: "example_field",
     type: "string",
     schema: {},

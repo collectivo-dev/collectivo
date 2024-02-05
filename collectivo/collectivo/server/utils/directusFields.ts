@@ -1,13 +1,5 @@
 import { DirectusField, NestedPartial } from "@directus/sdk";
 
-export function directusCollectionSchema() {
-  return {
-    schema: "schema",
-    name: "schema",
-    comment: null,
-  };
-}
-
 export function directusNameField(
   collection: string,
   meta?: any,

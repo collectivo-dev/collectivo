@@ -1,5 +1,5 @@
 html {
-  @apply text-black font-normal font-urbanist tracking-wide subpixel-antialiased;
+  @apply text-black font-normal font-[Urbanist] tracking-wide subpixel-antialiased;
 }
 
 h1 {

@@ -4,6 +4,7 @@ definePageMeta({
 });
 
 setCollectivoTitle("Dashboard");
+
 import { parse } from "marked";
 
 const tiles = useCollectivoTiles();
@@ -11,15 +12,43 @@ tiles.value.load();
 </script>
 
 <template>
-  <div class="gap-5 columns-1 md:columns-2 lg:columns-3 xl:columns-4">
+  <div class="gap-5 columns-1 md:columns-2 xl:columns-3 2xl:columns-4">
     <CollectivoCard
       v-for="tile in tiles.data"
       :key="tile.id"
       class="mb-5"
       :title="tile.name"
+      :color="tile.collectivo_color"
     >
       <template #content>
+        <!-- v-html is safe, as it is parsed from markdown -->
+        <!-- eslint-disable-next-line -->
         <div v-html="parse(tile.content)"></div>
+
+        <div v-if="tile.collectivo_buttons" class="flex flex-wrap gap-2 pt-3">
+          <template v-for="button in tile.collectivo_buttons" :key="button.id">
+            <a
+              v-if="button.collectivo_is_external"
+              :href="button.collectivo_path"
+              target="_blank"
+            >
+              <UButton
+                :label="button.collectivo_label"
+                :color="tile.collectivo_color"
+                size="md"
+                icon="i-heroicons-arrow-top-right-on-square-16-solid"
+                trailing
+              />
+            </a>
+            <NuxtLink v-else :to="button.collectivo_path">
+              <UButton
+                :label="button.collectivo_label"
+                :color="tile.collectivo_color"
+                size="md"
+              />
+            </NuxtLink>
+          </template>
+        </div>
       </template>
     </CollectivoCard>
   </div>

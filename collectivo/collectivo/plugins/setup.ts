@@ -23,8 +23,9 @@ export default defineNuxtPlugin(() => {
       external: true,
       hideOnMobile: true,
       order: 99,
-      filter: (_item) => {
-        return true;
+      filter: async (_item) => {
+        await user.value.load();
+        return user.value.data?.role?.app_access ?? false;
       },
     },
   ];

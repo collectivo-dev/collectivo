@@ -7,7 +7,7 @@ const collection = "collectivo_tags";
 schema.collections = [
   {
     collection: collection,
-    schema: directusCollectionSchema(),
+    schema: { name: collection },
     meta: {
       icon: "sell",
       sort: 510,

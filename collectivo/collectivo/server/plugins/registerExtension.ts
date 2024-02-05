@@ -4,6 +4,7 @@ import m001_extensions from "../schemas/001_extensions";
 import m002_settings from "../schemas/002_settings";
 import m003_tags from "../schemas/003_tags";
 import m004_tiles from "../schemas/004_tiles";
+import m005_messages from "../schemas/005_messages";
 
 import examples from "../examples/examples";
 
@@ -20,6 +21,7 @@ export default defineNitroPlugin(() => {
         m002_settings,
         m003_tags,
         m004_tiles,
+        m005_messages,
       ]),
     ],
     examples: examples,

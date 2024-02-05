@@ -19,8 +19,11 @@ schema.collections = [
     },
     meta: {
       group: "payments",
+      archive_field: "payments_archived",
+      archive_value: "true",
+      unarchive_value: "false",
       sort: 100,
-      icon: "bubble_chart",
+      icon: "category",
       translations: [
         {
           language: "en-US",
@@ -95,8 +98,37 @@ schema.collections = [
 ];
 
 schema.fields = [
+  // Payments items
   ...directusSystemFields("payments_items"),
   directusNameField("payments_items"),
+  {
+    collection: "payments_items",
+    field: "payments_price",
+    type: "integer",
+    schema: { default_value: 0, is_nullable: false },
+    meta: {
+      interface: "input",
+      required: true,
+      width: "half",
+      translations: [
+        { language: "de-DE", translation: "Preis" },
+        { language: "en-US", translation: "Price" },
+      ],
+    },
+  },
+  {
+    collection: "payments_items",
+    field: "payments_archived",
+    type: "boolean",
+    schema: { default_value: false, is_nullable: false },
+    meta: {
+      width: "half",
+      translations: [
+        { language: "de-DE", translation: "Archiviert" },
+        { language: "en-US", translation: "Archived" },
+      ],
+    },
+  },
 
   // Invoices out
   ...directusSystemFields("payments_invoices_out"),
@@ -209,6 +241,7 @@ schema.fields = [
     meta: {
       interface: "datetime",
       width: "half",
+      special: ["date-created"],
       translations: [
         { language: "de-DE", translation: "Datum Ausgestellt" },
         { language: "en-US", translation: "Date Issued" },

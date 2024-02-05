@@ -7,7 +7,28 @@ export default async function examples() {
 
   // Clean up old data
   await directus.request(deleteItems("memberships", { limit: 1000 }));
+
+  await directus.request(
+    deleteItems("payments_invoices_out", {
+      filter: { payments_entries: { payments_item: { name: "Shares" } } },
+    }),
+  );
+
+  await directus.request(
+    deleteItems("payments_items", { filter: { name: "Shares" } }),
+  );
+
   await directus.request(deleteItems("memberships_types", { limit: 1000 }));
+
+  // Create a shares item for accounting
+  console.info("Creating shares item");
+
+  const sharesItem = await directus.request(
+    createItem("payments_items", {
+      name: "Shares",
+      payments_price: 100,
+    }),
+  );
 
   // Create some membership types
   console.info("Creating membership types");
@@ -17,8 +38,8 @@ export default async function examples() {
   for (const type of types) {
     const type_response = await directus.request(
       createItem("memberships_types", {
-        id: type[0].toLowerCase(),
         name: type[0],
+        memberships_shares_item: sharesItem.id,
       }),
     );
 
@@ -50,6 +71,7 @@ export default async function examples() {
           memberships_user: user_id,
           memberships_type: membership_type,
           memberships_status: user[2],
+          memberships_shares: "3",
         }),
       );
     }

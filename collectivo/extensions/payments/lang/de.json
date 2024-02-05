@@ -3,5 +3,6 @@
   "Transfer": "Überweisung",
   "SEPA Direct Debit": "SEPA Lastschrift",
   "Bank account IBAN": "Bankkonto IBAN",
-  "Bank account owner": "Bankkonto Inhaber*in"
+  "Bank account owner": "Bankkonto Inhaber*in",
+  "IBAN not valid for SEPA": "IBAN nicht gültig für SEPA"
 }

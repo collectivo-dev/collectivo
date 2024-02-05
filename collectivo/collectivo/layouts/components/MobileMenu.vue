@@ -15,7 +15,7 @@ const publicMenuItems = Object.values(menus.value.public).sort(
 
 <template>
   <div class="mobile-menu">
-    <div class="mobile-menu__inner">
+    <div class="mobile-menu__inner space-x-1">
       <div
         v-for="(item, i) in user.isAuthenticated
           ? mainMenuItems

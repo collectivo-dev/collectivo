@@ -28,8 +28,7 @@ export default defineNuxtConfig({
     preference: "light",
   },
   hooks: {},
-  modules: ["@nuxt/ui", "@nuxtjs/i18n", "vue3-carousel-nuxt"],
-  // https://v8.i18n.nuxtjs.org/guide/layers
+  modules: ["@nuxt/ui", "@nuxtjs/i18n", "@nuxtjs/google-fonts"],
   i18n: {
     lazy: false, // TODO: Lazy loading does not work with current switch
     strategy: "no_prefix",
@@ -40,16 +39,16 @@ export default defineNuxtConfig({
       { code: "de", file: "de.json" },
     ],
   },
-  css: [
-    join(currentDir, "./assets/css/main.css"),
-    join(currentDir, "./assets/fonts/fonts.css"),
-    join(currentDir, "./assets/css/calendar.scss"),
-    join(currentDir, "./assets/css/group-radio.scss"),
-    join(currentDir, "./assets/css/date-picker.scss"),
-    join(currentDir, "./assets/css/global-input.scss"),
-  ],
+  css: [join(currentDir, "./assets/css/main.css")],
   ui: {
     global: true,
-    icons: ["system-uicons", "mi"],
+    icons: ["system-uicons", "mi", "heroicons"],
+    safelistColors: ["primary", "green", "orange", "blue", "pink", "red"],
+  },
+  googleFonts: {
+    download: true,
+    families: {
+      Urbanist: "100..900",
+    },
   },
 });

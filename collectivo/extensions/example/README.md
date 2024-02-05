@@ -1,63 +1,11 @@
-# Nuxt 3 Minimal Starter
+# Collectivo Example Extension
 
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+This is an example of an extension for [Collectivo](https://github.com/collectivo-dev/collectivo).
 
-## Setup
+## Directory Structure
 
-Make sure to install the dependencies:
+See also: [Nuxt Layers](https://nuxt.com/docs/getting-started/layers) and [Nuxt Directory Structure](https://nuxt.com/docs/guide/directory-structure/app)
 
-```bash
-# npm
-npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-```
-
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
-```bash
-# npm
-npm run dev
-
-# pnpm
-pnpm run dev
-
-# yarn
-yarn dev
-```
-
-## Production
-
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm run build
-
-# yarn
-yarn build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm run preview
-
-# yarn
-yarn preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+- `plugins/setup.ts`: Initiate your extension on the client-side, e.g. in order to add menu items to the sidebar.
+- `nuxt.config.ts`: Define your layers Nuxt configuration, which can also be used to override Collectivo's default configuration.
+- `index.d.ts`: Add types for your extension, which will also be accessible to lower layers. Extend the schema of the directus client from `useDirectus()` by declaring an interface `CollectivoSchema` with the collections and fields of your extension.

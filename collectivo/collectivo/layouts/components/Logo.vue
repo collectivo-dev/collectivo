@@ -24,7 +24,7 @@ defineProps({
 
 <style lang="scss" scoped>
 .logo {
-  @apply lg:w-full flex flex-col justify-center items-center md:mb-10 lg:mb-[52px];
+  @apply flex flex-col justify-center items-center px-1 md:mb-5 w-full lg:mb-[30px];
   &__label {
     @apply md:text-xs lg:text-sm font-semibold justify-center mt-2;
     letter-spacing: 0.28px;

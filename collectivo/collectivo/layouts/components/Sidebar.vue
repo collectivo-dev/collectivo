@@ -51,7 +51,7 @@ const publicMenuItems = Object.values(menus.value.public).sort(
   letter-spacing: 0.24px;
 }
 .sidebar {
-  @apply hidden md:block md:w-[100px] lg:w-[124px] rounded-xl bg-white shadow-sidebar px-3 py-5 fixed h-[calc(100vh-60px)] ml-8 overflow-y-auto;
+  @apply hidden md:block md:w-[100px] lg:w-[124px] rounded-xl bg-white shadow-sidebar px-3 py-4 fixed h-[calc(100vh-60px)] ml-8 overflow-y-auto;
 
   &__inner {
     @apply h-full;

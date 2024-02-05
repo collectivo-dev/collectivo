@@ -1,16 +1,28 @@
 <script setup lang="ts">
 const { t } = useI18n();
 
-defineProps({
+const props = defineProps({
   item: {
     type: Object as PropType<CollectivoMenuItem>,
     required: true,
   },
 });
+
+const visible = ref(false);
+filterItem(props.item);
+
+async function filterItem(item: CollectivoMenuItem) {
+  if (item.filter) {
+    visible.value = await item.filter(item);
+    return;
+  }
+
+  visible.value = true;
+}
 </script>
 
 <template>
-  <div v-if="!item.filter || item.filter(item)">
+  <div v-if="visible">
     <!-- IF item.to is function -->
     <div v-if="item.click">
       <a class="item cursor-pointer" @click="item.click()">
@@ -49,7 +61,7 @@ defineProps({
 .item {
   @apply flex flex-col items-center p-3 mb-1 rounded-xl transition-all;
   &__icon {
-    @apply block mb-1.5;
+    @apply block mb-1;
   }
 
   &__title {
@@ -58,27 +70,27 @@ defineProps({
   }
 
   &:hover {
-    @apply bg-[#ECF1FD];
+    @apply bg-primary-50;
     .item__title {
-      @apply text-primary;
+      @apply text-primary-900;
     }
 
     .item__icon {
       .link-icon {
-        @apply text-primary;
+        @apply text-primary-900;
       }
     }
   }
 
   &.router-link-exact-active {
-    @apply bg-[#ECF1FD];
+    @apply bg-primary-50;
     .item__title {
-      @apply text-primary;
+      @apply text-primary-900;
     }
 
     .item__icon {
       .link-icon {
-        @apply text-primary;
+        @apply text-primary-900;
       }
     }
   }
@@ -113,12 +125,12 @@ defineProps({
   &:hover {
     @apply bg-transparent;
     .item__title {
-      @apply text-primary;
+      @apply text-primary-900;
     }
 
     .item__icon {
       .link-icon {
-        @apply text-primary;
+        @apply text-primary-900;
       }
     }
   }

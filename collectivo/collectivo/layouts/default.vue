@@ -4,10 +4,31 @@ import PageTitle from "./components/PageTitle.vue";
 import MobileHeader from "./components/MobileHeader.vue";
 import MobileMenu from "./components/MobileMenu.vue";
 
-const { setLocale } = useI18n();
+const { setLocale, t } = useI18n();
 const user = useCollectivoUser();
+const router = useRouter();
 
-const langItems: any = ref([[]]);
+const topRightMenuNoAuthItems: any = ref([[]]);
+
+const topRightMenuItems: any = ref([
+  [
+    {
+      label: "Profile",
+      click: () => {
+        router.push({ name: "profile" });
+      },
+    },
+    {
+      label: "Logout",
+      click: () => {
+        user.value.logout();
+      },
+    },
+  ],
+  [
+    // for languages items
+  ],
+]);
 
 const locales = {
   de: "Deutsch",
@@ -15,7 +36,14 @@ const locales = {
 };
 
 for (const [key, value] of Object.entries(locales)) {
-  langItems.value[0].push({
+  topRightMenuNoAuthItems.value[0].push({
+    label: value,
+    click: () => {
+      setLocale(key);
+    },
+  });
+
+  topRightMenuItems.value[1].push({
     label: value,
     click: () => {
       setLocale(key);
@@ -71,14 +99,36 @@ for (const [key, value] of Object.entries(locales)) {
               name="i-system-uicons-exit-left"
               class="main__top__right__icon"
           /></a> -->
-          <!-- <div v-if="!user.isAuthenticated"> -->
-          <UDropdown :items="langItems" :popper="{ placement: 'bottom-start' }">
-            <UIcon
-              class="main__top__right__icon"
-              name="i-system-uicons-translate"
-            ></UIcon>
-          </UDropdown>
-          <!-- </div> -->
+          <template v-if="!user.isAuthenticated">
+            <UDropdown
+              :items="topRightMenuNoAuthItems"
+              :popper="{ placement: 'bottom-start' }"
+            >
+              <UIcon
+                class="main__top__right__icon"
+                name="i-system-uicons-translate"
+              ></UIcon>
+
+              <template #item="{ item }">
+                <span>{{ t(item.label) }}</span>
+              </template>
+            </UDropdown>
+          </template>
+          <template v-else>
+            <UDropdown
+              :items="topRightMenuItems"
+              :popper="{ placement: 'bottom-start' }"
+            >
+              <UIcon
+                class="main__top__right__icon"
+                name="i-system-uicons-user-male-circle"
+              />
+
+              <template #item="{ item }">
+                <span>{{ t(item.label) }}</span>
+              </template>
+            </UDropdown>
+          </template>
         </div>
       </div>
       <slot></slot>
