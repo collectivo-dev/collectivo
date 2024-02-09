@@ -369,3 +369,13 @@ You can use winston to write information to the nuxt logs (`console.log` will no
 ```ts
 logger.info("Hello world!");
 ```
+
+### Export Keycloak configs
+
+After running the application with docker compose, the keycloak configs can be exported with the following command:
+
+```bash
+docker compose exec keycloak  /opt/keycloak/bin/kc.sh export --dir /tmp/export
+```
+
+the exported configs are available in the `docker/keycloak/export` folder.  
