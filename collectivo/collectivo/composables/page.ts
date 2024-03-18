@@ -5,7 +5,7 @@ export const setCollectivoTitle = (title: string) => {
   useCollectivoTitle().value = title;
 
   useHead({
-    title: title + " - " + useAppConfig().projectName,
+    title: title + " - " + useAppConfig().collectivo.projectName,
   });
 };
 
@@ -14,6 +14,7 @@ export const useCollectivoMenus = () =>
     return {
       main: [],
       public: [],
+      profile: [],
     };
   });
 

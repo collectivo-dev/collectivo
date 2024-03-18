@@ -27,33 +27,33 @@ declare global {
 
   interface CollectivoTag {
     id: number;
-    name: string;
-    collectivo_members: CollectivoMember[] | number[];
+    tags_name: string;
+    tags_users: CollectivoUser[] | number[];
   }
 
   interface CollectivoTileButton {
     id: number;
-    collectivo_label: string;
-    collectivo_path: string;
-    collectivo_is_external: boolean;
+    tiles_label: string;
+    tiles_path: string;
+    tiles_is_external: boolean;
   }
 
   interface CollectivoTile {
     id: number;
-    name: string;
-    content: string;
-    status: "published" | "draft" | "archived";
     sort: number;
-    collectivo_buttons: CollectivoTileButton[];
-    collectivo_color: string;
+    tiles_name: string;
+    tiles_content: string;
+    tiles_status: "published" | "draft" | "archived";
+    tiles_buttons: CollectivoTileButton[];
+    tiles_color: string;
   }
 
   interface CollectivoExtension {
     id: number;
-    name: string;
-    version: string;
-    schema_version: number;
-    schema_is_latest: boolean;
+    extensions_name: string;
+    extensions_version: string;
+    extensions_schema_version: number;
+    extensions_schema_is_latest: boolean;
   }
 
   interface CollectivoSettings {
@@ -68,6 +68,7 @@ declare global {
   interface CollectivoMenus {
     main: CollectivoMenuItem[];
     public: CollectivoMenuItem[];
+    profile: CollectivoMenuItem[];
   }
 
   interface CollectivoMenuItem {
@@ -100,7 +101,7 @@ declare global {
 
   interface CollectivoFormFieldBase {
     order: number;
-    width?: "full" | "xl" | "lg" | "md" | "sm" | "xs";
+    width?: "full" | "half" | "xl" | "lg" | "md" | "sm" | "xs";
     conditions?: FormCondition[];
     _visible?: Ref<boolean>;
   }
@@ -149,9 +150,15 @@ declare global {
         expand?: boolean;
       }
     | {
-        type: "text" | "number" | "email" | "password" | "textarea" | "date";
+        type: "text" | "number" | "email" | "password" | "textarea";
         placeholder?: string;
         icon?: string;
+      }
+    | {
+        type: "date";
+        useDatePicker?: boolean;
+        maxYearsFuture?: number;
+        maxYearsPast?: number;
       }
     | {
         type: "checkbox";
@@ -168,6 +175,7 @@ declare global {
   }
 
   interface FormCondition {
+    type?: "==" | "authenticated" | "notAuthenticated";
     key: string;
     value: string | number | boolean;
     // TODO: Add operator?: "==" | "!=" | ">" | "<" | ">=" | "<=";

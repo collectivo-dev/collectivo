@@ -2,7 +2,7 @@ version: "3"
 
 services:
   directus:
-    image: directus/directus:10.8.3
+    image: directus/directus:10.9.1
     ports:
       - 8055:8055
     volumes:
@@ -54,13 +54,12 @@ services:
 
       LOG_LEVEL: "debug"
 
-      # EMAIL_VERIFY_SETUP: true
-      # EMAIL_FROM: ${DIRECTUS_EMAIL_FROM}
-      # EMAIL_TRANSPORT: ${DIRECTUS_EMAIL_TRANSPORT}
-      # EMAIL_SMTP_HOST: ${DIRECTUS_EMAIL_SMTP_HOST}
-      # EMAIL_SMTP_PORT: ${DIRECTUS_EMAIL_SMTP_PORT}
-      # EMAIL_SMTP_USER: ${DIRECTUS_EMAIL_SMTP_USER}
-      # EMAIL_SMTP_PASSWORD: ${DIRECTUS_EMAIL_SMTP_PASSWORD}
+      EMAIL_FROM: ${DIRECTUS_EMAIL_FROM}
+      EMAIL_TRANSPORT: ${DIRECTUS_EMAIL_TRANSPORT}
+      EMAIL_SMTP_HOST: ${DIRECTUS_EMAIL_SMTP_HOST}
+      EMAIL_SMTP_PORT: ${DIRECTUS_EMAIL_SMTP_PORT}
+      EMAIL_SMTP_USER: ${DIRECTUS_EMAIL_SMTP_USER}
+      EMAIL_SMTP_PASSWORD: ${DIRECTUS_EMAIL_SMTP_PASSWORD}
 
   directus-db:
     image: postgis/postgis:15-3.4-alpine
@@ -75,6 +74,8 @@ services:
       POSTGRES_USER: "directus"
       POSTGRES_PASSWORD: ${DIRECTUS_DB_PASSWORD}
       POSTGRES_DB: "directus"
+    ports:
+      - 5432:5432
 
   directus-cache:
     image: redis:6

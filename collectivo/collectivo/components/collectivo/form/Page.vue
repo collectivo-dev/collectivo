@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import type { FetchError } from "ofetch";
-
 const toast = useToast();
 const { t } = useI18n();
 const debug = useRuntimeConfig().public.debug;
@@ -11,38 +9,39 @@ const props = defineProps({
     type: Object as PropType<CollectivoForm>,
     required: true,
   },
+  data: {
+    type: Object as PropType<Record<string, any>>,
+    required: false,
+  },
 });
-
-function extractErrorMessages(err: FetchError | null) {
-  if (!(err && err.data && err.data?.errors)) {
-    return;
-  }
-
-  for (const subErr of err.data.errors) {
-    if (
-      subErr.message ==
-      'Value for field "email" in collection "directus_users" has to be unique.'
-    ) {
-      errorMessage.value = t("This email is already in use");
-    }
-  }
-}
 
 async function onSubmitNuxt(data: any) {
   if (!props.form.submitPath) {
     throw new Error("Invalid form configuration");
   }
 
+  const directus = useDirectus();
+
+  const headers: { [key: string]: string } = {
+    Accept: "application/json",
+  };
+
+  try {
+    // Add token to header if exists
+    const token = await directus.refresh();
+    headers["Authorization"] = `${token.access_token}`;
+  } catch (err) {
+    // do nothing
+  }
+
   const res = await useFetch(props.form.submitPath, {
     method: "POST",
-    headers: {
-      Accept: "application/json",
-    },
+    headers: headers,
     body: JSON.stringify(data),
   });
 
   if (res.status.value === "error") {
-    extractErrorMessages(res.error.value);
+    errorMessage.value = res.error.value?.message ?? "";
     throw res.error.value;
   }
 }
@@ -83,6 +82,7 @@ async function onSubmit(data: any) {
       :fields="form.fields"
       :submit="onSubmit"
       :submit-label="form.submitLabel"
+      :data="data"
     />
     <template v-else>
       <slot name="success">

@@ -1,5 +1,6 @@
 import { createItem, readItems, updateItem } from "@directus/sdk";
-import ExtensionBaseMigration from "../schemas/001_extensions";
+import SettingsBaseMigration from "../schemas/settings_01";
+import ExtensionBaseMigration from "../schemas/extensions_01";
 import { ExtensionConfig } from "./extensions";
 import { ExtensionSchema } from "./schemas";
 
@@ -93,16 +94,17 @@ async function getExtensionsFromDb() {
 
     return extensions;
   } catch (e) {
-    // Run initial migration if extensions collection is not found
+    // Run base-migration if extensions collection is not found
     try {
+      await SettingsBaseMigration.apply();
       await ExtensionBaseMigration.apply();
 
       await directus.request(
         createItem("collectivo_extensions", {
-          name: "collectivo",
-          version: "0.0.0",
-          schema_version: "0.0.0",
-          schema_is_latest: false,
+          extensions_name: "collectivo",
+          extensions_version: "0.0.0",
+          extensions_schema_version: "0.0.0",
+          extensions_schema_is_latest: false,
         }),
       );
     } catch (e2) {
@@ -151,7 +153,7 @@ export async function migrateCustom(
   }
 
   try {
-    const extsDb = await getExtensionsFromDb();
+    // const extsDb = await getExtensionsFromDb();
     // TODO checkSchemaDependencies(schema, extsDb);
     await schema.run_before();
     await schema.apply();
@@ -177,17 +179,17 @@ async function runMigrations(ext: ExtensionConfig, extsDb: any[], to?: string) {
   const directus = await useDirectusAdmin();
 
   // Get schema state of current extension from database
-  let extensionDb = extsDb.find((f) => f.name === ext.name);
+  let extensionDb = extsDb.find((f) => f.extensions_name === ext.name);
 
   // Register extension if not found
   if (!extensionDb) {
     try {
       extensionDb = await directus.request(
         createItem("collectivo_extensions", {
-          name: ext.name,
-          version: ext.version,
-          schema_version: "0.0.0",
-          schema_is_latest: false,
+          extensions_name: ext.name,
+          extensions_version: ext.version,
+          extensions_schema_version: "0.0.0",
+          extensions_schema_is_latest: false,
         }),
       );
     } catch (e) {
@@ -197,10 +199,10 @@ async function runMigrations(ext: ExtensionConfig, extsDb: any[], to?: string) {
   }
 
   // Update version if extension is already registered
-  else if (extensionDb.version !== ext.version) {
+  else if (extensionDb.extensions_version !== ext.version) {
     await directus.request(
       updateItem("collectivo_extensions", extensionDb.id, {
-        version: ext.version,
+        extensions_version: ext.version,
       }),
     );
   }
@@ -247,8 +249,9 @@ async function runMigrations(ext: ExtensionConfig, extsDb: any[], to?: string) {
 
         await directus.request(
           updateItem("collectivo_extensions", extensionDb.id, {
-            schema_version: ext.schemas[migrationStateIndex].version,
-            schema_is_latest: migrationStateIndex === ext.schemas.length - 1,
+            extensions_schema_version: ext.schemas[migrationStateIndex].version,
+            extensions_schema_is_latest:
+              migrationStateIndex === ext.schemas.length - 1,
           }),
         );
       } catch (e) {

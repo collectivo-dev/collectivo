@@ -2,7 +2,12 @@
 export default defineEventHandler(async (event) => {
   // Protect route with API Token
   verifyCollectivoApiToken(event);
-  await refreshDirectus();
+
+  try {
+    await refreshDirectus();
+  } catch (e) {
+    logger.error("Failed to connect to Directus", e);
+  }
 
   // Read parameters
   const query = getQuery(event) as { [key: string]: string };

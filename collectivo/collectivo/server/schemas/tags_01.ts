@@ -11,10 +11,7 @@ schema.collections = [
     meta: {
       icon: "sell",
       sort: 510,
-      archive_field: "status",
-      archive_value: "archived",
-      unarchive_value: "published",
-      display_template: "{{name}}",
+      display_template: "{{tags_name}}",
       translations: [
         {
           language: "en-US",
@@ -34,12 +31,27 @@ schema.collections = [
 ];
 
 schema.fields = [
-  directusNameField(collection),
-  directusStatusField(collection),
   ...directusSystemFields(collection),
   {
     collection: collection,
-    field: "description",
+    field: "tags_name",
+    type: "string",
+    schema: {
+      is_nullable: false,
+      is_unique: true,
+    },
+    meta: {
+      sort: 1,
+      required: true,
+      translations: [
+        { language: "en-US", translation: "Name" },
+        { language: "de-DE", translation: "Name" },
+      ],
+    },
+  },
+  {
+    collection: collection,
+    field: "tags_description",
     type: "text",
     schema: {},
     meta: { interface: "input-multiline", sort: 20 },
@@ -60,12 +72,19 @@ schema.fields = [
 schema.createM2MRelation("collectivo_tags", "directus_users", {
   m2mFieldType2: "uuid",
   field1: {
-    field: "directus_users",
+    field: "tags_users",
     type: "alias",
     meta: {
       special: ["m2m"],
       sort: 30,
       interface: "list-m2m",
+      options: {
+        layout: "table",
+        fields: ["directus_users_id.first_name", "directus_users_id.last_name"],
+        enableCreate: false,
+        enableSearchFilter: true,
+        enableLink: true,
+      },
       translations: [
         { language: "en-US", translation: "Users" },
         { language: "de-DE", translation: "Benutzer*innen" },
@@ -83,6 +102,27 @@ schema.createM2MRelation("collectivo_tags", "directus_users", {
     },
   },
 });
+
+schema.permissions.push(
+  {
+    collection: "directus_users",
+    roleName: "collectivo_user",
+    action: "read",
+    fields: ["collectivo_tags"],
+  },
+  {
+    collection: "directus_users",
+    roleName: "collectivo_editor",
+    action: "read",
+    fields: ["collectivo_tags"],
+  },
+  {
+    collection: "directus_users",
+    roleName: "collectivo_editor",
+    action: "update",
+    fields: ["collectivo_tags"],
+  },
+);
 
 for (const action of ["read", "update", "create", "delete"]) {
   for (const collection of [

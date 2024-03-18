@@ -53,6 +53,7 @@ class CollectivoUserStore {
   async login(force: boolean = false) {
     const directus = useDirectus();
     const user = useCollectivoUser();
+    const route = useRoute();
     const runtimeConfig = useRuntimeConfig();
 
     // If user is authenticated, do nothing
@@ -63,7 +64,7 @@ class CollectivoUserStore {
 
     if (runtimeConfig.public.authService === "keycloak") {
       return navigateTo(
-        `${runtimeConfig.public.directusUrl}/auth/login/keycloak?redirect=${runtimeConfig.public.collectivoUrl}`,
+        `${runtimeConfig.public.directusUrl}/auth/login/keycloak?redirect=${runtimeConfig.public.collectivoUrl}${route.path}`,
         { external: true },
       );
     } else {

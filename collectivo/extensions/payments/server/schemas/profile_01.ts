@@ -100,6 +100,18 @@ schema.permissions = [
     action: "update",
     fields: editor_fields,
   },
+  {
+    collection: "directus_users",
+    roleName: "collectivo_user",
+    action: "read",
+    fields: user_fields,
+  },
+  {
+    collection: "directus_users",
+    roleName: "collectivo_user",
+    action: "update",
+    fields: user_fields,
+  },
 ];
 
 schema.translations = [

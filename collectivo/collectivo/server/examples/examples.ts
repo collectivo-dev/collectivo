@@ -106,7 +106,7 @@ export default async function examples() {
 
   for (const tagName of tagNames) {
     tags.push({
-      name: tagName,
+      tags_name: tagName,
     });
   }
 
@@ -125,6 +125,33 @@ export default async function examples() {
 
   try {
     await directus.request(createItems("collectivo_tags", tags));
+  } catch (error) {
+    console.info(error);
+  }
+
+  // Create email templates
+  console.info("Creating email templates");
+  await directus.request(deleteItems("messages_templates", { limit: 1000 }));
+  const templates = [];
+
+  for (const i in [1, 2, 3]) {
+    templates.push({
+      messages_name: `Example Template ${i}`,
+      messages_method: "email",
+      messages_subject: `Example Subject ${i}`,
+      messages_content:
+        "Hello {{recipient_first_name}} {{recipient_last_name}}. \n This is a second line.",
+    });
+  }
+
+  const templateIds = [];
+
+  try {
+    const ids = await directus.request(
+      createItems("messages_templates", templates),
+    );
+
+    templateIds.push(...ids);
   } catch (error) {
     console.info(error);
   }
@@ -155,17 +182,16 @@ export default async function examples() {
   const tiles = [];
 
   const tileButton = {
-    collectivo_label: "Example Button",
-    collectivo_path: "/some/path",
-    collectivo_tile: "",
-    status: "published",
+    tiles_label: "Example Button",
+    tiles_path: "/some/path",
+    tiles_tile: "",
   };
 
   for (const td of tileData) {
     tiles.push({
-      name: td.name,
-      content: "Hello! I am an example tile!",
-      collectivo_color: td.color,
+      tiles_name: td.name,
+      tiles_content: "Hello! I am an example tile!",
+      tiles_color: td.color,
     });
   }
 
@@ -175,7 +201,7 @@ export default async function examples() {
     );
 
     for (const tile of tilesRes) {
-      tileButton.collectivo_tile = tile.id;
+      tileButton.tiles_tile = tile.id;
 
       await directus.request(
         createItem("collectivo_tiles_buttons", tileButton),

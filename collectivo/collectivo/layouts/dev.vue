@@ -16,8 +16,12 @@ function toggleSideBar() {
 
 <template>
   <Head>
-    <Title v-if="t(pageTitle) == ''">{{ t(appConfig.projectName) }}</Title>
-    <Title v-else>{{ t(pageTitle) }} - {{ t(appConfig.projectName) }}</Title>
+    <Title v-if="t(pageTitle) == ''">{{
+      t(appConfig.collectivo.projectName)
+    }}</Title>
+    <Title v-else
+      >{{ t(pageTitle) }} - {{ t(appConfig.collectivo.projectName) }}</Title
+    >
   </Head>
   <div id="collectivo-frame" class="flex h-screen bg-mila font-sans">
     <!-- Backdrop (when sidebar is open) -->

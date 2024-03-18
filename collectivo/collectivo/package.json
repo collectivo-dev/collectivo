@@ -1,6 +1,6 @@
 {
   "name": "@collectivo/collectivo",
-  "version": "0.1.1",
+  "version": "0.2.3",
   "description": "Collectivo is a module system for community plattforms.",
   "type": "module",
   "license": "AGPL-3.0",
@@ -21,30 +21,30 @@
     "lint:fix": "eslint --cache . --fix"
   },
   "dependencies": {
-    "@directus/sdk": "^14.0.0",
-    "@keycloak/keycloak-admin-client": "^23.0.3",
-    "@nuxt/ui": "^2.11.1",
+    "@directus/sdk": "^15.0.0",
+    "@keycloak/keycloak-admin-client": "^23.0.6",
+    "@nuxt/ui": "^2.13.0",
     "compare-versions": "^6.1.0",
-    "marked": "^11.1.0",
+    "marked": "^12.0.0",
     "v-calendar": "^3.1.2",
     "winston": "^3.11.0",
     "yup": "^1.3.3"
   },
   "devDependencies": {
-    "@iconify/json": "^2.2.165",
-    "@nuxt/devtools": "^1.0.6",
-    "@nuxt/test-utils": "^3.9.0",
+    "@iconify/json": "^2.2.181",
+    "@nuxt/devtools": "^1.0.8",
+    "@nuxt/test-utils": "^3.11.0",
     "@nuxtjs/google-fonts": "^3.1.3",
-    "@nuxtjs/i18n": "8.0.0",
-    "@typescript-eslint/eslint-plugin": "6.16.0",
-    "@typescript-eslint/parser": "6.16.0",
-    "@vitest/ui": "^1.1.0",
+    "@nuxtjs/i18n": "8.1.0",
+    "@typescript-eslint/eslint-plugin": "6.21.0",
+    "@typescript-eslint/parser": "6.21.0",
+    "@vitest/ui": "^1.2.2",
     "eslint": "8.56.0",
     "eslint-config-prettier": "9.1.0",
-    "eslint-plugin-vue": "9.19.2",
-    "nuxt": "^3.9.0",
-    "prettier": "3.1.1",
-    "sass": "^1.69.5",
-    "vitest": "^1.1.0"
+    "eslint-plugin-vue": "9.21.1",
+    "nuxt": "^3.10.1",
+    "prettier": "3.2.5",
+    "sass": "^1.70.0",
+    "vitest": "^1.2.2"
   }
 }

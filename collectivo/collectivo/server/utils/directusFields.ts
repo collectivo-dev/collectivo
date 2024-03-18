@@ -1,57 +1,17 @@
 import { DirectusField, NestedPartial } from "@directus/sdk";
 
-export function directusNameField(
+type PartialField = NestedPartial<DirectusField<any>>;
+
+export function directusStatusField(
   collection: string,
-  meta?: any,
-): NestedPartial<DirectusField<any>> {
+  fieldName: string,
+  field?: PartialField,
+) {
   return {
     collection: collection,
-    field: "name",
+    field: fieldName,
     type: "string",
-    schema: {
-      is_nullable: false,
-      is_unique: true,
-    },
-    meta: {
-      sort: 1,
-      required: true,
-      translations: [
-        { language: "en-US", translation: "Name" },
-        { language: "de-DE", translation: "Name" },
-      ],
-      ...meta,
-    },
-  };
-}
-
-export function directusDescriptionField(collection: string, meta?: any) {
-  return {
-    collection: collection,
-    field: "description",
-    type: "text",
-    schema: {},
-    meta: { interface: "input-multiline", sort: 1, ...meta },
-  };
-}
-
-export function directusNotesField(collection: string, meta?: any) {
-  return {
-    collection: collection,
-    field: "notes",
-    type: "text",
-    schema: {},
-    meta: {
-      interface: "input-rich-text-md",
-      ...meta,
-    },
-  };
-}
-
-export function directusStatusField(collection: string, meta?: any) {
-  return {
-    collection: collection,
-    field: "status",
-    type: "string",
+    ...field,
     meta: {
       width: "full",
       options: {
@@ -87,13 +47,13 @@ export function directusStatusField(collection: string, meta?: any) {
           },
         ],
       },
-      ...meta,
+      ...field?.meta,
     },
     schema: { default_value: "draft", is_nullable: false },
   };
 }
 
-export function directusSystemFields(collection: string, meta?: any) {
+export function directusSystemFields(collection: string) {
   return [
     {
       collection: collection,
@@ -109,7 +69,6 @@ export function directusSystemFields(collection: string, meta?: any) {
         readonly: true,
         hidden: true,
         width: "half",
-        ...meta,
       },
       schema: {},
     },
@@ -125,7 +84,6 @@ export function directusSystemFields(collection: string, meta?: any) {
         width: "half",
         display: "datetime",
         display_options: { relative: true },
-        ...meta,
       },
       schema: {},
     },
@@ -143,7 +101,6 @@ export function directusSystemFields(collection: string, meta?: any) {
         readonly: true,
         hidden: true,
         width: "half",
-        ...meta,
       },
       schema: {},
     },
@@ -159,7 +116,6 @@ export function directusSystemFields(collection: string, meta?: any) {
         width: "half",
         display: "datetime",
         display_options: { relative: true },
-        ...meta,
       },
       schema: {},
     },

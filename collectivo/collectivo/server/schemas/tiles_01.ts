@@ -9,7 +9,7 @@ schema.collections = [
     meta: {
       icon: "dashboard",
       sort: 520,
-      archive_field: "status",
+      archive_field: "tiles_status",
       archive_value: "archived",
       sort_field: "sort",
       unarchive_value: "published",
@@ -34,7 +34,7 @@ schema.collections = [
     schema: { name: "collectivo_tiles_buttons" },
     meta: {
       hidden: true,
-      display_template: "{{collectivo_label}}",
+      display_template: "{{tiles_label}}",
       sort_field: "sort",
       translations: [
         {
@@ -55,14 +55,31 @@ schema.collections = [
 ];
 
 schema.fields = [
-  directusNameField("collectivo_tiles"),
+  ...directusSystemFields("collectivo_tiles"),
+  ...directusSystemFields("collectivo_tiles_buttons"),
   directusSortField("collectivo_tiles"),
   directusSortField("collectivo_tiles_buttons"),
-  directusStatusField("collectivo_tiles"),
-  ...directusSystemFields("collectivo_tiles"),
+  directusStatusField("collectivo_tiles", "tiles_status"),
   {
     collection: "collectivo_tiles",
-    field: "content",
+    field: "tiles_name",
+    type: "string",
+    schema: {
+      is_nullable: false,
+      is_unique: true,
+    },
+    meta: {
+      sort: 1,
+      required: true,
+      translations: [
+        { language: "en-US", translation: "Name" },
+        { language: "de-DE", translation: "Name" },
+      ],
+    },
+  },
+  {
+    collection: "collectivo_tiles",
+    field: "tiles_content",
     type: "text",
     schema: {},
     meta: {
@@ -90,7 +107,8 @@ schema.fields = [
     },
   },
   {
-    field: "collectivo_color",
+    collection: "collectivo_tiles",
+    field: "tiles_color",
     type: "string",
     schema: { default_value: "primary" },
     meta: {
@@ -111,13 +129,12 @@ schema.fields = [
         { language: "de-DE", translation: "Farbe" },
       ],
     },
-    collection: "collectivo_tiles",
   },
 
   // Button fields
   {
-    field: "collectivo_label",
     collection: "collectivo_tiles_buttons",
+    field: "tiles_label",
     type: "string",
     meta: {
       sort: 2,
@@ -130,8 +147,8 @@ schema.fields = [
     schema: {},
   },
   {
-    field: "collectivo_path",
     collection: "collectivo_tiles_buttons",
+    field: "tiles_path",
     type: "string",
     meta: {
       sort: 2,
@@ -143,8 +160,8 @@ schema.fields = [
     schema: {},
   },
   {
-    field: "collectivo_is_external",
     collection: "collectivo_tiles_buttons",
+    field: "tiles_is_external",
     type: "boolean",
     meta: {
       sort: 2,
@@ -162,20 +179,20 @@ schema.fields = [
 
 schema.createForeignKey("collectivo_tiles_buttons", "collectivo_tiles", {
   fieldKey: {
-    field: "collectivo_tile",
+    field: "tiles_tile",
     meta: {
       hidden: true,
     },
   },
   fieldAlias: {
-    field: "collectivo_buttons",
+    field: "tiles_buttons",
     meta: {
       options: {
         enableSelect: false,
       },
       display: "related-values",
       display_options: {
-        template: "{{collectivo_label}}",
+        template: "{{tiles_label}}",
       },
       translations: [
         { language: "en-US", translation: "Buttons" },
@@ -196,16 +213,14 @@ schema.createForeignKey("collectivo_tiles_buttons", "collectivo_tiles", {
 });
 
 for (const collection of ["collectivo_tiles", "collectivo_tiles_buttons"]) {
-  schema.permissions = [
-    {
-      roleName: "collectivo_user",
-      collection: collection,
-      action: "read",
-      fields: ["*"],
-      permissions: {},
-      validation: {},
-    },
-  ];
+  schema.permissions.push({
+    roleName: "collectivo_user",
+    collection: collection,
+    action: "read",
+    fields: ["*"],
+    permissions: {},
+    validation: {},
+  });
 
   for (const action of ["read", "update", "create", "delete"]) {
     schema.permissions.push({

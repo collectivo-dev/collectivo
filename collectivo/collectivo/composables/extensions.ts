@@ -7,7 +7,7 @@ export const useCollectivoExtensions = () =>
   );
 
 class CollectivoExtensionsStore {
-  data: CollectivoTile[] | null;
+  data: CollectivoExtension[] | null;
   loading: boolean;
   error: unknown;
 

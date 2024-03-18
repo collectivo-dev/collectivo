@@ -16,7 +16,7 @@ export default async function examples() {
   for (const name of item_names) {
     const res = await directus.request(
       createItem("payments_items", {
-        name: name,
+        payments_name: name,
       }),
     );
 

@@ -2,47 +2,7 @@ const schema = initSchema("collectivo", "0.0.1");
 
 export default schema;
 
-schema.roles = [
-  {
-    name: "collectivo_user",
-    app_access: false,
-    admin_access: false,
-  },
-  {
-    name: "collectivo_editor",
-    app_access: true,
-    admin_access: false,
-  },
-  {
-    name: "collectivo_admin",
-    app_access: true,
-    admin_access: true,
-  },
-];
-
 schema.collections = [
-  {
-    collection: "collectivo_settings",
-    meta: {
-      icon: "settings",
-      sort: 1000,
-      singleton: true,
-      translations: [
-        {
-          language: "en-US",
-          translation: "Settings",
-          singular: "Settings",
-          plural: "Settings",
-        },
-        {
-          language: "de-DE",
-          translation: "Einstellungen",
-          singular: "Einstellungen",
-          plural: "Einstellungen",
-        },
-      ],
-    },
-  },
   {
     collection: "collectivo_extensions",
     schema: { name: "schema", comment: null },
@@ -69,9 +29,10 @@ schema.collections = [
 ];
 
 schema.fields = [
+  ...directusSystemFields("collectivo_extensions"),
   {
     collection: "collectivo_extensions",
-    field: "name",
+    field: "extensions_name",
     type: "string",
     schema: { is_unique: true, is_nullable: false },
     meta: {
@@ -87,7 +48,7 @@ schema.fields = [
   },
   {
     collection: "collectivo_extensions",
-    field: "status",
+    field: "extensions_status",
     type: "string",
     meta: {
       width: "half",
@@ -126,7 +87,7 @@ schema.fields = [
   },
   {
     collection: "collectivo_extensions",
-    field: "version",
+    field: "extensions_version",
     type: "string",
     meta: {
       translations: [
@@ -141,7 +102,7 @@ schema.fields = [
   },
   {
     collection: "collectivo_extensions",
-    field: "schema_version",
+    field: "extensions_schema_version",
     type: "string",
     meta: {
       translations: [
@@ -156,7 +117,7 @@ schema.fields = [
   },
   {
     collection: "collectivo_extensions",
-    field: "schema_is_latest",
+    field: "extensions_schema_is_latest",
     type: "string",
     meta: {
       translations: [
@@ -172,11 +133,7 @@ schema.fields = [
 ];
 
 for (const action of ["read"]) {
-  for (const collection of [
-    // "collectivo_settings",
-    "collectivo_extensions",
-    "directus_roles",
-  ]) {
+  for (const collection of ["collectivo_extensions"]) {
     schema.permissions.push({
       collection: collection,
       roleName: "collectivo_editor",
@@ -184,60 +141,4 @@ for (const action of ["read"]) {
       fields: ["*"],
     });
   }
-}
-
-const user_fields = ["first_name", "last_name", "email", "title"];
-
-const editor_fields = [
-  "first_name",
-  "last_name",
-  "email",
-  "title",
-  "description",
-
-  "admin_divider",
-  "role",
-  "status",
-];
-
-schema.permissions.push(
-  {
-    collection: "directus_users",
-    roleName: "collectivo_user",
-    action: "read",
-    permissions: { _and: [{ id: { _eq: "$CURRENT_USER" } }] },
-    fields: ["id", ...user_fields],
-  },
-  {
-    collection: "directus_users",
-    roleName: "collectivo_user",
-    action: "update",
-    permissions: { _and: [{ id: { _eq: "$CURRENT_USER" } }] },
-    fields: user_fields,
-  },
-);
-
-for (const action of ["read", "update", "create", "delete"]) {
-  schema.permissions.push({
-    collection: "directus_users",
-    roleName: "collectivo_editor",
-    action: action,
-    fields: editor_fields,
-    permissions: { _and: [{ id: { _nnull: true } }] }, // = all users
-  });
-
-  // Insights permissions for editors
-  schema.permissions.push({
-    collection: "directus_dashboards",
-    roleName: "collectivo_editor",
-    action: action,
-    fields: ["*"],
-  });
-
-  schema.permissions.push({
-    collection: "directus_panels",
-    roleName: "collectivo_editor",
-    action: action,
-    fields: ["*"],
-  });
 }

@@ -10,8 +10,22 @@ import {
   date,
 } from "yup";
 import type { FormErrorEvent, FormSubmitEvent } from "#ui/types";
+import { parse, marked } from "marked";
+
+const renderer = {
+  link(href: string, title: string, text: string) {
+    const link = marked.Renderer.prototype.link.call(this, href, title, text);
+    return link.replace("<a", "<a target='_blank' ");
+  },
+};
+
+marked.use({
+  // @ts-ignore
+  renderer,
+});
 
 const customValidators = useCollectivoValidators();
+const user = useCollectivoUser();
 const toast = useToast();
 const { t } = useI18n();
 const debug = useRuntimeConfig().public.debug;
@@ -36,7 +50,11 @@ function checkConditions(conditions: FormCondition[] | undefined) {
   }
 
   for (const condition of conditions) {
-    if (state[condition.key] !== condition.value) {
+    if (condition.type == "authenticated") {
+      return user.value.isAuthenticated;
+    } else if (condition.type == "notAuthenticated") {
+      return !user.value.isAuthenticated;
+    } else if (state[condition.key] !== condition.value) {
       return false;
     }
   }
@@ -77,7 +95,8 @@ function addInputToSchema(
   // If the condition is not met, use a hidden schema field
   if (input.conditions && input.conditions.length > 0) {
     const schema_field_with_conditions = object().when(
-      input.conditions.map((c) => c.key),
+      input.conditions.map((c) => c.key ?? c.type),
+
       (_, schema_field_hidden) => {
         if (checkConditions(input.conditions)) {
           return schema_field;
@@ -239,7 +258,7 @@ async function fillOutAll() {
     } else if (input.type === "checkbox") {
       state[input.key] = true;
     } else if (input.type === "date") {
-      state[input.key] = "2021-01-01";
+      state[input.key] = new Date();
     } else if ("key" in input) {
       state[input.key] = "test";
     }
@@ -251,7 +270,7 @@ async function fillOutAll() {
   <UForm
     :schema="schema"
     :state="state"
-    class="flex flex-wrap w-full"
+    class="cv-form flex flex-wrap w-full"
     @submit="onSubmit"
     @error="onError"
   >
@@ -264,16 +283,22 @@ async function fillOutAll() {
           <h2 v-if="input.title">
             {{ t(input.title) }}
           </h2>
-          <div v-if="input.description" class="leading-5 py-2">
-            {{ t(input.description) }}
-          </div>
+          <div
+            v-if="input.description"
+            class="leading-5 py-2 md-description"
+            v-html="parse(t(input.description))"
+          ></div>
         </div>
         <div v-else-if="input.type === 'description'" class="form-field-full">
           <UFormGroup :label="input.label ? t(input.label) : undefined">
             <div v-if="input.boxed" class="form-box text-sm">
               {{ t(input.description) }}
             </div>
-            <div v-else class="text-sm">{{ t(input.description) }}</div>
+            <div
+              v-else
+              class="md-description md-small"
+              v-html="parse(t(input.description))"
+            ></div>
           </UFormGroup>
         </div>
         <component
@@ -295,6 +320,13 @@ async function fillOutAll() {
             :description="input.description ? t(input.description) : undefined"
             :name="input.key"
           >
+            <template #description>
+              <div
+                v-if="input.description"
+                class="md-description md-small"
+                v-html="parse(t(input.description))"
+              ></div>
+            </template>
             <template #error="{ error }">
               <div v-if="error && typeof error === 'string'">
                 {{ t(error) }}
@@ -394,8 +426,15 @@ async function fillOutAll() {
               </template>
             </template>
             <template v-else-if="input.type === 'date'">
-              <CollectivoFormDate
+              <CollectivoFormDatePicker
+                v-if="input.useDatePicker"
                 v-model="state[input.key]"
+              ></CollectivoFormDatePicker>
+              <CollectivoFormDate
+                v-else
+                v-model="state[input.key]"
+                :max-years-future="input.maxYearsFuture"
+                :max-years-past="input.maxYearsPast"
                 :disabled="input.disabled"
               ></CollectivoFormDate>
             </template>
@@ -408,9 +447,9 @@ async function fillOutAll() {
                 />
                 <span
                   v-if="input.content"
-                  class="text-sm font-medium text-gray-500-700 dark:text-gray-500-200"
-                  >{{ t(input.content) }}</span
-                >
+                  class="md-description md-small"
+                  v-html="parse(t(input.content))"
+                ></span>
               </div>
             </template>
             <template v-else-if="input.type === 'custom-input'">
@@ -455,6 +494,13 @@ async function fillOutAll() {
 </template>
 
 <style lang="scss" scoped>
+:deep(.md-small > p) {
+  @apply text-sm;
+}
+
+:deep(.md-description > p > a) {
+  @apply font-bold;
+}
 .form-box {
   @apply bg-blue-50 shadow-sm rounded-lg  px-4 py-3 flex flex-row gap-2;
 }

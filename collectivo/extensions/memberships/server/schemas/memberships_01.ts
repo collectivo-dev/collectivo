@@ -18,10 +18,8 @@ schema.collections = [
     meta: {
       sort: 100,
       icon: "switch_account",
-      archive_field: "memberships_status",
-      archive_value: "ended",
-      unarchive_value: "draft",
-      display_template: "{{memberships_user}} - {{memberships_type}}",
+      display_template:
+        "{{memberships_user}} - {{memberships_type.memberships_name}}",
       translations: [
         {
           language: "en-US",
@@ -45,7 +43,7 @@ schema.collections = [
       sort: 10,
       group: "collectivo_settings",
       icon: "switch_account",
-      display_template: "{{name}}",
+      display_template: "{{memberships_name}}",
       translations: [
         {
           language: "en-US",
@@ -209,8 +207,37 @@ schema.fields = [
   },
 
   // Membership Types
-  directusNameField("memberships_types"),
-  directusDescriptionField("memberships_types"),
+  {
+    collection: "memberships_types",
+    field: "memberships_name",
+    type: "string",
+    schema: {
+      is_nullable: false,
+      is_unique: true,
+    },
+    meta: {
+      sort: 1,
+      required: true,
+      translations: [
+        { language: "en-US", translation: "Name" },
+        { language: "de-DE", translation: "Name" },
+      ],
+    },
+  },
+  {
+    collection: "memberships_types",
+    field: "memberships_description",
+    type: "text",
+    schema: {},
+    meta: {
+      interface: "input-multiline",
+      sort: 1,
+      translations: [
+        { language: "en-US", translation: "Description" },
+        { language: "de-DE", translation: "Beschreibung" },
+      ],
+    },
+  },
 
   // System fields for both collections
   ...directusSystemFields("memberships"),
@@ -320,7 +347,91 @@ schema.relations.push(
   ],
 );
 
-// # Flows
+// ----------------------------------------------------------------------------
+// Flows ----------------------------------------------------------------------
+// ----------------------------------------------------------------------------
+
+schema.flows.push({
+  flow: {
+    name: "memberships_send_messages",
+    icon: "conveyor_belt",
+    status: "active",
+    accountability: "all",
+    trigger: "manual",
+    options: {
+      collections: ["memberships"],
+      requireConfirmation: true,
+      fields: [
+        {
+          field: "template",
+          name: "Template",
+          type: "json",
+          meta: {
+            interface: "collection-item-dropdown",
+            options: {
+              selectedCollection: "messages_templates",
+              template: "{{name}}",
+            },
+            required: true,
+          },
+        },
+      ],
+      confirmationDescription: "Please choose a template",
+    },
+  },
+  firstOperation: "readMemberships",
+  operations: [
+    {
+      operation: {
+        name: "readMemberships",
+        key: "readMemberships",
+        type: "item-read",
+        position_x: 1,
+        position_y: 17,
+        options: {
+          collection: "memberships",
+          query: {
+            fields: ["memberships_user"],
+            filter: { id: { _in: "{{$trigger.body.keys}}" } },
+          },
+        },
+      },
+      resolve: "prepareRecipients",
+    },
+    {
+      operation: {
+        name: "prepareRecipients",
+        key: "prepareRecipients",
+        type: "exec",
+        position_x: 17,
+        position_y: 17,
+        options: {
+          code: 'module.exports = async function(data) {\n\tconst recipients = []\n    for (i in data["readMemberships"]) {\n \trecipients.push(\n            {\n                messages_campaigns_id: "+",\n           \t\tdirectus_users_id: { id: data["readMemberships"][i].memberships_user }\n            }\n        )\n    }\n\treturn { recipients };\n}',
+        },
+      },
+      resolve: "createCampaign",
+    },
+    {
+      operation: {
+        name: "createCampaign",
+        key: "createCampaign",
+        type: "item-create",
+        position_x: 35,
+        position_y: 17,
+        options: {
+          collection: "messages_campaigns",
+          permissions: "$full",
+          emitEvents: true,
+          payload: {
+            messages_recipients: "{{prepareRecipients.recipients}}",
+            messages_template: "{{$trigger.body.template.key}}",
+          },
+        },
+      },
+    },
+  ],
+});
+
 schema.flows.push({
   flow: {
     name: "memberships_create_invoice_for_shares",
@@ -513,26 +624,36 @@ schema.flows.push({
 // Permissions ----------------------------------------------------------------
 // ----------------------------------------------------------------------------
 
-schema.permissions = [
-  {
+for (const action of ["create", "read", "update", "delete"]) {
+  schema.permissions.push({
     collection: "memberships",
     roleName: "collectivo_editor",
-    action: "read",
+    action: action,
     fields: ["*"],
-  },
-  {
-    collection: "memberships",
-    roleName: "collectivo_editor",
-    action: "update",
-    fields: ["*"],
-  },
-  {
+  });
+
+  schema.permissions.push({
     collection: "memberships_types",
     roleName: "collectivo_editor",
-    action: "read",
+    action: action,
     fields: ["*"],
-  },
-];
+  });
+}
+
+schema.permissions.push({
+  collection: "memberships",
+  roleName: "collectivo_user",
+  permissions: { _and: [{ memberships_user: { _eq: "$CURRENT_USER" } }] },
+  action: "read",
+  fields: ["*"],
+});
+
+schema.permissions.push({
+  collection: "memberships_types",
+  roleName: "collectivo_user",
+  action: "read",
+  fields: ["*"],
+});
 
 // ----------------------------------------------------------------------------
 // Translations ---------------------------------------------------------------

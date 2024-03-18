@@ -29,6 +29,7 @@ export interface DirectusOperationWrapper {
   operation: Partial<DirectusOperation<any>>;
   reject?: string;
   resolve?: string;
+  flowToTrigger?: string; // Only for operations of type "trigger". For those this field is required.
 }
 
 export interface DirectusFlowWrapper {
@@ -284,6 +285,7 @@ interface directusO2MSettings {
   fieldKey?: NestedPartial<DirectusField<any>>;
   fieldAlias?: NestedPartial<DirectusField<any>>;
   relation?: NestedPartial<DirectusRelation<any>>;
+  m2oFieldType?: string;
 }
 
 // CollectionOne has the Alias Field - Can have many of CollectionAlias
@@ -300,7 +302,7 @@ export async function createForeignKey(
   schema.fields.push({
     collection: CollectionKey,
     field: fieldKeyName,
-    type: "integer",
+    type: settings?.m2oFieldType ? settings?.m2oFieldType : "integer",
     schema: {},
     ...fieldKey,
     meta: {

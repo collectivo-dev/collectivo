@@ -1,7 +1,12 @@
 import pkg from "../../package.json";
-import m001_memberships from "../schemas/001_memberships";
-import m002_profile from "../schemas/002_profile";
+import memberships_01 from "../schemas/memberships_01";
+import profile_01 from "../schemas/profile_01";
 import examples from "../examples/examples";
+
+const schema_0_0_1 = combineSchemas("memberships", "0.0.1", [
+  memberships_01,
+  profile_01,
+]);
 
 // Register extension on startup
 export default defineNitroPlugin(() => {
@@ -9,9 +14,7 @@ export default defineNitroPlugin(() => {
     name: "memberships",
     description: pkg.description,
     version: pkg.version,
-    schemas: [
-      combineSchemas("memberships", "0.0.1", [m001_memberships, m002_profile]),
-    ],
+    schemas: [schema_0_0_1],
     examples: examples,
   });
 });

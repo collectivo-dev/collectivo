@@ -16,7 +16,16 @@ export default defineNuxtPlugin({
       },
     ];
 
+    const profileItems: CollectivoMenuItem[] = [
+      {
+        label: "Membership",
+        to: "/memberships/membership",
+        order: 1,
+      },
+    ];
+
     menu.value.public.push(...publicItems);
+    menu.value.profile.push(...profileItems);
 
     const is_legal = [
       {
@@ -34,11 +43,17 @@ export default defineNuxtPlugin({
 
     const profileInputs: CollectivoFormField[] = [
       {
+        type: "section",
+        order: 400,
+        title: "Personal data",
+        conditions: is_natural,
+      },
+      {
         type: "select",
         key: "memberships_person_type",
         label: "Type of person",
         default: "natural",
-        order: 110,
+        order: 420,
         disabled: true,
         choices: [
           {
@@ -59,16 +74,28 @@ export default defineNuxtPlugin({
         required: true,
         choices: [
           {
-            value: "diverse",
-            label: "Diverse",
-          },
-          {
             value: "female",
             label: "Female",
           },
           {
             value: "male",
             label: "Male",
+          },
+          {
+            value: "diverse",
+            label: "Diverse",
+          },
+          {
+            value: "inter",
+            label: "Inter",
+          },
+          {
+            value: "open",
+            label: "Offen",
+          },
+          {
+            value: "no-answer",
+            label: "No answer",
           },
         ],
       },
@@ -84,6 +111,7 @@ export default defineNuxtPlugin({
         key: "memberships_birthday",
         type: "date",
         order: 450,
+        width: "lg",
         required: true,
         conditions: is_natural,
       },

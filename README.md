@@ -84,7 +84,7 @@ Migration logs can be found in the nuxt terminal.
 
 - To reset the database, delete the volume of the directus-db database
 
-# Development
+# Development guide
 
 ## Overview
 
@@ -120,11 +120,30 @@ The repository is structured as follows:
 - Create frontend components for your extension (see [Frontend API](#frontend-api))
 - Follow [installation](#installation) to start the development app.
 
+## Adding a database schema
+
+An extension can define a database schema
+
+- Create a new schema file in `myExtension/server/schemas`.
+  - Create a new [`ExtensionSchema`](#extensionschema) with [initschema()](#initschema).
+  - Add collections, fields, and more to your schema (see [`ExtensionSchema`](#extensionschema))
+- Add your schema to [myExtension/server/plugins/setup](#registerextension).
+
+Note that database collections and fields should start with the name of the extension followed by an underscore to avoid name conflicts with other extensions. E.g. `myExtension_myCollection` and `myExtension_myField`.
+
+Exceptions are the following system fields:
+
+- `id`
+- `user_created`
+- `user_updated`
+- `date_created`
+- `date_updated`
+- `sort`
+
 ## Best practices
 
 - Regularly [sync your fork](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/syncing-a-fork) with the upstream repository.
 - To update dependencies, run `pnpm update collectivo/extensions/my-extension -L`
-- All named elements (database collections and fields as well as frontend components and composables) should start with the extension name to avoid name conflicts with other extensions, e.g. `myExtension_myCollection`, `myExtension_myField`, `myExtensionVueComponent`.
 - You can also add fields to collections that are not part of your extensions, like `directus_users`.
 - To publish your extension, run `pnpm publish collectivo/extensions/my-extension --access=public --dry-run` (remove `--dry-run` after checking that everything is correct)
 - The example extension is licensed under [public domain](https://de.wikipedia.org/wiki/Unlicense). You can choose your own license for your extension, it does not have to be the same as collectivo.

@@ -1,9 +1,15 @@
 {
+  "No memberships found": "Keine Mitgliedschaften gefunden",
+  "Membership": "Mitgliedschaft",
+  "Type": "Art",
+  "Status": "Status",
+  "Shares": "Anteile",
+
   "Register": "Registrieren",
   "Membership application form": "Mitgliedschaftsantrag",
   "Application submitted!": "Antrag gesendet!",
   "Welcome!": "Willkommen!",
-  "User account": "Benutzerkonto",
+
   "Personal data": "Persönliche Daten",
   "Organization": "Organisation",
   "Organization name": "Organisationsname",
@@ -11,7 +17,6 @@
   "Organization ID": "Organisations ID",
   "Organization contact person": "Organisation Kontaktperson",
   "Organization address": "Organisation Adresse",
-  "Membership": "Mitgliedschaft",
   "Payment details": "Zahlungsweise",
   "Conditions": "Konditionen",
   "Survey": "Umfrage",
@@ -20,9 +25,14 @@
   "First name": "Vorname",
   "Last name": "Nachname",
   "Gender": "Geschlecht",
-  "Diverse": "Divers",
+
   "Female": "Weiblich",
   "Male": "Männlich",
+  "Diverse": "Divers",
+  "Inter": "Inter",
+  "Open": "Offen",
+  "No answer": "Keine Angabe",
+
   "Phone": "Telefon",
   "Birthday": "Geburtstag",
   "Occupation": "Beruf",

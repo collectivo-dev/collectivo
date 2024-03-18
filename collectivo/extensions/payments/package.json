@@ -1,6 +1,6 @@
 {
   "name": "@collectivo/payments",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "An extension of collectivo to manage payments.",
   "type": "module",
   "license": "AGPL-3.0",
@@ -23,14 +23,14 @@
     "ibantools": "^4.3.9"
   },
   "devDependencies": {
-    "@nuxt/devtools": "^1.0.6",
-    "@nuxt/test-utils": "^3.9.0",
-    "@typescript-eslint/eslint-plugin": "6.16.0",
-    "@typescript-eslint/parser": "6.16.0",
+    "@nuxt/devtools": "^1.0.8",
+    "@nuxt/test-utils": "^3.11.0",
+    "@typescript-eslint/eslint-plugin": "6.21.0",
+    "@typescript-eslint/parser": "6.21.0",
     "eslint": "8.56.0",
     "eslint-config-prettier": "9.1.0",
-    "eslint-plugin-vue": "9.19.2",
-    "nuxt": "^3.9.0",
-    "prettier": "3.1.1"
+    "eslint-plugin-vue": "9.21.1",
+    "nuxt": "^3.10.1",
+    "prettier": "3.2.5"
   }
 }

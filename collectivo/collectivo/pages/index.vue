@@ -17,33 +17,31 @@ tiles.value.load();
       v-for="tile in tiles.data"
       :key="tile.id"
       class="mb-5"
-      :title="tile.name"
-      :color="tile.collectivo_color"
+      :title="tile.tiles_name"
+      :color="tile.tiles_color"
     >
       <template #content>
-        <!-- v-html is safe, as it is parsed from markdown -->
-        <!-- eslint-disable-next-line -->
-        <div v-html="parse(tile.content)"></div>
+        <div v-if="tile.tiles_content" v-html="parse(tile.tiles_content)"></div>
 
-        <div v-if="tile.collectivo_buttons" class="flex flex-wrap gap-2 pt-3">
-          <template v-for="button in tile.collectivo_buttons" :key="button.id">
+        <div v-if="tile.tiles_buttons" class="flex flex-wrap gap-2 pt-3">
+          <template v-for="button in tile.tiles_buttons" :key="button.id">
             <a
-              v-if="button.collectivo_is_external"
-              :href="button.collectivo_path"
+              v-if="button.tiles_is_external"
+              :href="button.tiles_path"
               target="_blank"
             >
               <UButton
-                :label="button.collectivo_label"
-                :color="tile.collectivo_color"
+                :label="button.tiles_label"
+                :color="tile.tiles_color"
                 size="md"
                 icon="i-heroicons-arrow-top-right-on-square-16-solid"
                 trailing
               />
             </a>
-            <NuxtLink v-else :to="button.collectivo_path">
+            <NuxtLink v-else :to="button.tiles_path">
               <UButton
-                :label="button.collectivo_label"
-                :color="tile.collectivo_color"
+                :label="button.tiles_label"
+                :color="tile.tiles_color"
                 size="md"
               />
             </NuxtLink>
