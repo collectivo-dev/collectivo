@@ -76,7 +76,7 @@ Here is an example to prepare a new system for local development (the same code 
 curl --header "Authorization: badToken" --request POST "http://localhost:3000/api/migrate/?examples=true"
 ```
 
-This cURL command can also imported in an HTTP client like [Postman](https://www.postman.com/).
+This cURL command can also be imported in an HTTP client like [Postman](https://www.postman.com/).
 
 Migration logs can be found in the nuxt terminal.
 
@@ -258,7 +258,7 @@ export default defineNuxtPlugin(() => {
     to: "/my/path",
     order: 100
   });
-}
+})
 ```
 
 ## Backend
