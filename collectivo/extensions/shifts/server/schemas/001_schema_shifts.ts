@@ -180,28 +180,29 @@ schema.fields = [
   },
 ];
 
-schema.createO2MRelation("shifts_slots", "shifts_shifts", "shifts_shift");
-schema.createM2MRelation("shifts_skills", "shifts_slots");
-schema.createO2MRelation("shifts_assignments", "shifts_slots", "shifts_slot");
-
-schema.createO2MRelation("shifts_logs", "directus_users", "shifts_user", {
-  collectionManyFieldType: "uuid",
+schema.createForeignKey("shifts_slots", "shifts_shifts", {
+  fieldKey: { field: "shifts_shift" },
 });
 
-schema.createO2MRelation(
-  "shifts_logs",
-  "shifts_assignments",
-  "shifts_assignment",
-);
+schema.createM2MRelation("shifts_skills", "shifts_slots");
 
-schema.createO2MRelation(
-  "shifts_assignments",
-  "directus_users",
-  "shifts_user",
-  {
-    collectionManyFieldType: "uuid",
-  },
-);
+schema.createForeignKey("shifts_assignments", "shifts_slots", {
+  fieldKey: { field: "shifts_slot" },
+});
+
+schema.createForeignKey("shifts_logs", "directus_users", {
+  m2oFieldType: "uuid",
+  fieldKey: { field: "shifts_user" },
+});
+
+schema.createForeignKey("shifts_logs", "shifts_assignments", {
+  fieldKey: { field: "shifts_assignment" },
+});
+
+schema.createForeignKey("shifts_assignments", "directus_users", {
+  m2oFieldType: "uuid",
+  fieldKey: { field: "shifts_user" },
+});
 
 schema.createM2MRelation("shifts_skills", "directus_users", {
   m2mFieldType2: "uuid",

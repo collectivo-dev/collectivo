@@ -1,32 +1,63 @@
 import type { ShiftLogType } from "~/server/utils/ShiftLogType";
+import { DateTime } from "luxon";
 
 declare global {
-  interface CollectivoSlot {
-    id: string;
-    shifts_name: string;
-    shifts_skills: CollectivoSkill[];
-    shifts_shift: CollectivoShift;
+  interface CollectivoSchema {
+    shifts_slots: ShiftsSlot[];
+    shifts_skills: ShiftsSkill[];
+    shifts_assignments: ShiftsAssignment[];
+    shifts_logs: ShiftsLog[];
+    shifts_shifts: ShiftsShift[];
+    shifts_skills_directus_users: ShiftsSkillUserLink[];
   }
 
-  interface CollectivoSkill {
+  export interface ShiftsSlot {
+    id: string;
+    shifts_name: string;
+    shifts_shift: ShiftsShift;
+    shifts_skills: ShiftsSkill[];
+  }
+
+  export interface ShiftsSkill {
     id: string;
     shifts_name: string;
   }
 
-  interface CollectivoAssignment {
+  export interface ShiftsAssignment {
     id: string;
     shifts_from: string;
     shifts_to?: string;
-    shifts_slot: CollectivoSlot;
+    shifts_slot: ShiftsSlot;
     shifts_user: CollectivoUser;
   }
 
-  interface CollectivoLog {
+  export interface ShiftsLog {
     id: string;
     shifts_type: ShiftLogType;
     shifts_datetime: string;
     shifts_user: CollectivoUser;
-    shifts_assignment: CollectivoAssignment;
+    shifts_assignment: ShiftsAssignment;
+  }
+
+  export interface ShiftOccurrence {
+    shift: ShiftsShift;
+    start: DateTime;
+    end: DateTime;
+  }
+
+  export interface ShiftsShift {
+    id?: string;
+    shifts_name: string;
+    shifts_from: string;
+    shifts_to?: string;
+    shifts_duration: number;
+    shifts_repeats_every: number;
+  }
+
+  export interface ShiftsSkillUserLink {
+    id?: string;
+    shifts_skills_id: string;
+    directus_users_id: string;
   }
 }
 

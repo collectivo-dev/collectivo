@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { readItem } from "@directus/sdk";
-import type { CollectivoShift, ShiftOccurrence } from "~/composables/types";
 import { DateTime } from "luxon";
 import { getNextOccurrences } from "~/composables/shifts";
 
@@ -8,33 +7,33 @@ const route = useRoute();
 const directus = useDirectus();
 const user = useCollectivoUser();
 user.value.load();
-const shift: Ref<CollectivoShift> = ref(null);
+const shift = ref<ShiftsShift>();
 
 directus
-  .request(readItem("shifts_shifts", route.params.id))
-  .then((item: CollectivoShift) => {
+  .request(readItem("shifts_shifts", route.params.id as string))
+  .then((item) => {
     shift.value = item;
   })
   .catch((error) => showShiftToast("Shift data could not be loaded", error));
 
 const nextOccurrences: Ref<ShiftOccurrence[]> = ref([]);
-const shift_start: Ref<DateTime> = ref(null);
-const shift_end: Ref<DateTime> = ref(null);
+const shift_start = ref<DateTime>();
+const shift_end = ref<DateTime>();
 
 watch(shift, () => {
   if (!shift.value) return;
-  setDetails();
+  setDetails(shift.value);
 });
 
-function setDetails() {
-  shift_start.value = DateTime.fromISO(shift.value.shifts_from);
+function setDetails(shift: CollectivoShift) {
+  shift_start.value = DateTime.fromISO(shift.shifts_from);
 
   shift_end.value = shift_start.value.plus({
-    minutes: shift.value.shifts_duration,
+    minutes: shift.shifts_duration,
   });
 
   setCollectivoTitle(
-    shift.value.shifts_name +
+    shift.shifts_name +
       ", " +
       shift_start.value.toLocaleString({ weekday: "long" }) +
       " from " +
@@ -43,7 +42,7 @@ function setDetails() {
       shift_end.value.toLocaleString(DateTime.TIME_SIMPLE),
   );
 
-  nextOccurrences.value = getNextOccurrences(shift.value, 5);
+  nextOccurrences.value = getNextOccurrences(shift, 5);
 }
 </script>
 
@@ -52,7 +51,9 @@ function setDetails() {
     <h1>Details</h1>
     <ul v-if="shift">
       <li>Is currently active : {{ isShiftDurationModelActive(shift) }}</li>
-      <li>Started on: {{ shift_start.toLocaleString(DateTime.DATE_SHORT) }}</li>
+      <li v-if="shift_start">
+        Started on: {{ shift_start.toLocaleString(DateTime.DATE_SHORT) }}
+      </li>
       <li>
         Ends on :
         <span v-if="shift.shifts_to">{{

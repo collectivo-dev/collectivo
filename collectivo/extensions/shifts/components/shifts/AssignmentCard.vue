@@ -8,7 +8,7 @@ import {
 
 const props = defineProps({
   shiftAssignment: {
-    type: Object as PropType<CollectivoAssignment>,
+    type: Object as PropType<ShiftsAssignment>,
     required: true,
   },
 });

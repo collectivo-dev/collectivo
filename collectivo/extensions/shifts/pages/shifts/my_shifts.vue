@@ -7,22 +7,25 @@ import {
 import { DateTime } from "luxon";
 import { getUserLogs, getUserScore } from "~/composables/shift_logs";
 import { ShiftLogType } from "~/server/utils/ShiftLogType";
+import showShiftToast from "~/composables/toast";
 
 setCollectivoTitle("My shifts");
 const directus = useDirectus();
 const user = useCollectivoUser();
 
-const activeAndFutureAssignments: Ref<CollectivoAssignment[]> = ref([]);
-const pastAssignments: Ref<CollectivoAssignment[]> = ref([]);
-const skillsUserLinks = ref([]);
+const activeAndFutureAssignments: Ref<ShiftsAssignment[]> = ref([]);
+const pastAssignments: Ref<ShiftsAssignment[]> = ref([]);
+const skillsLoading = ref(true);
+const skillsUserLinks = ref<ShiftsSkillUserLink[]>([]);
+const skillNames = ref<string[]>([]);
 const score = ref("loading...");
-const logs = ref([]);
+const logs = ref<ShiftsLog[]>([]);
 
 user.value
   .load()
-  .then((userStore: CollectivoUserStore) => {
-    loadAssignments(userStore.data);
-    loadUserShiftDetails(userStore.data);
+  .then((userStore) => {
+    loadAssignments(userStore.data!);
+    loadUserShiftDetails(userStore.data!);
   })
   .catch((error) => showShiftToast("Failed to load user data", error));
 
@@ -30,11 +33,11 @@ function loadAssignments(user: CollectivoUser) {
   directus
     .request(
       readItems("shifts_assignments", {
-        filter: { shifts_user: { _eq: user.id } },
-        fields: "*,shifts_slot.*,shifts_slot.shifts_shift.*",
+        filter: { shifts_user: { id: { _eq: user.id } } },
+        fields: ["*", "shifts_slot", { shifts_slot: ["shifts_shift"] }],
       }),
     )
-    .then((assignments: CollectivoAssignment[]) => {
+    .then((assignments) => {
       assignments.sort((a, b) => {
         const nextA = getNextOccurrence(a.shifts_slot.shifts_shift);
         const nextB = getNextOccurrence(b.shifts_slot.shifts_shift);
@@ -48,9 +51,9 @@ function loadAssignments(user: CollectivoUser) {
         const from = DateTime.fromISO(assignment.shifts_from);
 
         if (isShiftDurationModelActive(assignment) || from > DateTime.now()) {
-          activeAndFutureAssignments.value.push(assignment);
+          //activeAndFutureAssignments.value.push(assignment);
         } else {
-          pastAssignments.value.push(assignment);
+          //pastAssignments.value.push(assignment);
         }
       }
     })
@@ -62,10 +65,13 @@ function loadUserShiftDetails(user: CollectivoUser) {
     .request(
       readItems("shifts_skills_directus_users", {
         filter: { directus_users_id: { _eq: user.id } },
-        fields: "*.*",
+        fields: ["*", { shifts_skills: ["*"] }, { directus_users: ["*"] }],
       }),
     )
-    .then((items) => skillsUserLinks.value.push(...items))
+    .then((items) => {
+      skillsUserLinks.value.push(...items);
+      getUserSkillNames();
+    })
     .catch((error) => showShiftToast("Failed to load skills", error));
 
   getUserScore(user, DateTime.now())
@@ -80,6 +86,26 @@ function loadUserShiftDetails(user: CollectivoUser) {
     })
     .catch((error) => showShiftToast("Failed to load logs", error));
 }
+
+function getUserSkillNames() {
+  directus
+    .request(
+      readItems("shifts_skills", {
+        filter: {
+          id: {
+            _in: skillsUserLinks.value.map((link) => link.shifts_skills_id),
+          },
+        },
+        fields: ["shifts_name"],
+      }),
+    )
+    .then((skills) => {
+      skillNames.value = skills.map((skill) => skill.shifts_name);
+      getUserSkillNames();
+    })
+    .catch((error) => showShiftToast("Failed to load skills", error))
+    .finally(() => (skillsLoading.value = false));
+}
 </script>
 
 <template>
@@ -91,10 +117,13 @@ function loadUserShiftDetails(user: CollectivoUser) {
           <p>My type : {{ user.data["shifts_user_type"] }}</p>
           <p>
             <span>My skills: </span>
-            <span v-if="!skillsUserLinks.length">None</span>
-            <span v-for="(link, index) in skillsUserLinks" :key="link.id">
-              <span v-if="index !== 0">, </span>
-              <span>{{ link.shifts_skills_id.shifts_name }}</span>
+            <span v-if="skillsLoading">loading...</span>
+            <span v-else>
+              <span v-if="!skillNames.length">None</span>
+              <span v-for="(skillName, index) in skillNames" :key="skillName">
+                <span v-if="index !== 0">, </span>
+                <span>{{ skillName }}</span>
+              </span>
             </span>
           </p>
           <p>

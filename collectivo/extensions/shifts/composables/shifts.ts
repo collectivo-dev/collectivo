@@ -134,7 +134,7 @@ export const isFromToActive = (
 };
 
 export const isNextOccurrenceWithinAssignment = (
-  assignment: CollectivoAssignment,
+  assignment: ShiftsAssignment,
 ): boolean => {
   const nextOccurrence = getNextOccurrence(assignment.shifts_slot.shifts_shift);
 

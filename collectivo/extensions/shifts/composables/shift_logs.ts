@@ -6,7 +6,7 @@ export const getUserScore = async (
   user: CollectivoUser,
   at?: DateTime,
 ): Promise<number> => {
-  const logs: CollectivoLog[] = await getUserLogs(user, at);
+  const logs: ShiftsLog[] = await getUserLogs(user, at);
 
   let score = 0;
 
@@ -27,7 +27,7 @@ export const getUserScore = async (
 export const getUserLogs = async (
   user: CollectivoUser,
   at?: DateTime,
-): Promise<CollectivoLog[]> => {
+): Promise<ShiftsLog[]> => {
   const directus = useDirectus();
 
   const query = {
@@ -41,7 +41,7 @@ export const getUserLogs = async (
     };
   }
 
-  const logs: CollectivoLog[] = await directus.request(
+  const logs: ShiftsLog[] = await directus.request(
     readItems("shifts_logs", query),
   );
 

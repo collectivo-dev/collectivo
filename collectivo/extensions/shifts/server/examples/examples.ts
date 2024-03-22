@@ -18,6 +18,7 @@ export default async function examples() {
   await createSlots();
   await createSkills();
   await createAssignments();
+  await addSkillsToUsers();
 
   console.info("Example data for shifts created");
 }
@@ -42,7 +43,7 @@ async function createShifts() {
   const directus = await useDirectusAdmin();
 
   const monday = DateTime.now().startOf("week");
-  const shiftsRequests: CollectivoShift[] = [];
+  const shiftsRequests: ShiftsShift[] = [];
 
   const nb_weeks = 3;
 
@@ -76,19 +77,19 @@ async function createSlots() {
       for (let i = 0; i < 2; i++) {
         slotsRequests.push({
           shifts_name: "Cleaning",
-          shifts_shift: shift["id"],
+          shifts_shift: shift.id,
         });
       }
     } else {
       slotsRequests.push({
         shifts_name: "Cashier",
-        shifts_shift: shift["id"],
+        shifts_shift: shift.id,
       });
 
       for (let i = 0; i < 2; i++) {
         slotsRequests.push({
           shifts_name: "Shelves",
-          shifts_shift: shift["id"],
+          shifts_shift: shift.id,
         });
       }
     }
@@ -123,8 +124,8 @@ async function createSkills() {
 
   for (const slot of slots) {
     requests.push({
-      shifts_skills_id: cashierSkill["id"],
-      shifts_slots_id: slot["id"],
+      shifts_skills_id: cashierSkill.id,
+      shifts_slots_id: slot.id,
     });
   }
 
@@ -157,10 +158,54 @@ async function createAssignments() {
 
     assignments.push({
       shifts_from: DateTime.now().toString(),
-      shifts_slot: slot["id"],
-      shifts_user: user["id"],
+      shifts_slot: slot.id,
+      shifts_user: user.id,
     });
   }
 
   await directus.request(createItems("shifts_assignments", assignments));
+}
+
+async function addSkillsToUsers() {
+  const directus = await useDirectusAdmin();
+
+  const skills = await directus.request(
+    readItems("shifts_skills", {
+      fields: ["id", "shifts_name"],
+    }),
+  );
+
+  if (!skills) return;
+
+  const users = await directus.request(
+    readUsers({
+      fields: ["id"],
+    }),
+  );
+
+  const links: ShiftsSkillUserLink[] = [];
+
+  users.forEach((user, index) => {
+    const skill = skills[index % skills.length];
+
+    links.push({
+      directus_users_id: user.id,
+      shifts_skills_id: skill.id,
+    });
+  });
+
+  const test1 = await directus.request(
+    createItems("shifts_skills_directus_users", links),
+  );
+
+  console.log(links);
+  console.log(test1);
+
+  const test2 = await directus.request(
+    readItems("shifts_skills_directus_users", {
+      fields: ["*"],
+    }),
+  );
+
+  console.log(test2);
 }
