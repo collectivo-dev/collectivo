@@ -194,18 +194,5 @@ async function addSkillsToUsers() {
     });
   });
 
-  const test1 = await directus.request(
-    createItems("shifts_skills_directus_users", links),
-  );
-
-  console.log(links);
-  console.log(test1);
-
-  const test2 = await directus.request(
-    readItems("shifts_skills_directus_users", {
-      fields: ["*"],
-    }),
-  );
-
-  console.log(test2);
+  await directus.request(createItems("shifts_skills_directus_users", links));
 }
