@@ -9,18 +9,20 @@ declare global {
     shifts_logs: ShiftsLog[];
     shifts_shifts: ShiftsShift[];
     shifts_skills_directus_users: ShiftsSkillUserLink[];
+    shifts_skills_shifts_slots: ShiftsSkillSlotLink[];
   }
 
   export interface ShiftsSlot {
     id: string;
     shifts_name: string;
     shifts_shift: ShiftsShift;
-    shifts_skills: ShiftsSkill[];
+    shifts_skills: string[];
   }
 
   export interface ShiftsSkill {
     id: string;
     shifts_name: string;
+    shifts_slots: string[];
   }
 
   export interface ShiftsAssignment {
@@ -58,6 +60,12 @@ declare global {
     id?: string;
     shifts_skills_id: string;
     directus_users_id: string;
+  }
+
+  export interface ShiftsSkillSlotLink {
+    id?: string;
+    shifts_skills_id: string;
+    shifts_slot_id: string;
   }
 }
 

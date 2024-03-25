@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { readItems } from "@directus/sdk";
+import showShiftToast from "~/composables/toast";
 
 const props = defineProps({
   shift: {
@@ -21,8 +22,12 @@ function loadAssignments() {
     .request(
       readItems("shifts_assignments", {
         filter: {
-          shifts_user: { _eq: props.user },
-          shifts_slot: { shifts_shift: { _eq: props.shift } },
+          shifts_user: {
+            id: {
+              _eq: props.user.id,
+            },
+          },
+          shifts_slot: { shifts_shift: { id: { _eq: props.shift.id } } },
         },
         fields: [
           "*",
