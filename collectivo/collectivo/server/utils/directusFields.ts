@@ -2,6 +2,12 @@ import { DirectusField, NestedPartial } from "@directus/sdk";
 
 type PartialField = NestedPartial<DirectusField<any>>;
 
+export enum ItemStatus {
+  ARCHIVED = "archived",
+  DRAFT = "draft",
+  PUBLISHED = "published",
+}
+
 export function directusStatusField(
   collection: string,
   fieldName: string,
@@ -16,9 +22,9 @@ export function directusStatusField(
       width: "full",
       options: {
         choices: [
-          { text: "$t:published", value: "published" },
-          { text: "$t:draft", value: "draft" },
-          { text: "$t:archived", value: "archived" },
+          { text: "$t:published", value: ItemStatus.PUBLISHED },
+          { text: "$t:draft", value: ItemStatus.DRAFT },
+          { text: "$t:archived", value: ItemStatus.ARCHIVED },
         ],
       },
       translations: [
@@ -33,19 +39,19 @@ export function directusStatusField(
         choices: [
           {
             text: "$t:published",
-            value: "published",
+            value: ItemStatus.PUBLISHED,
             foreground: "#FFFFFF",
             background: "var(--primary)",
           },
           {
             text: "$t:draft",
-            value: "draft",
+            value: ItemStatus.DRAFT,
             foreground: "#18222F",
             background: "#D3DAE4",
           },
           {
             text: "$t:archived",
-            value: "archived",
+            value: ItemStatus.ARCHIVED,
             foreground: "#FFFFFF",
             background: "var(--warning)",
           },
@@ -53,7 +59,7 @@ export function directusStatusField(
       },
       ...field?.meta,
     },
-    schema: { default_value: "draft", is_nullable: false },
+    schema: { default_value: ItemStatus.DRAFT, is_nullable: false },
   };
 }
 

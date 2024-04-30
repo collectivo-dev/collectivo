@@ -9,7 +9,7 @@ declare global {
     memberships: MembershipsMembership[] | number[];
   }
 
-  interface MembershipsMembership {
+  export interface MembershipsMembership {
     id: number;
     name: string;
     memberships_user: DirectusUser | number;
@@ -17,6 +17,11 @@ declare global {
     memberships_type: string;
     memberships_shares: number;
   }
+}
+
+// Types for input of app.config.ts
+declare module "nuxt/schema" {
+  interface AppConfigInput {}
 }
 
 export {};
