@@ -1,0 +1,899 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../development/">
+      
+      
+      
+      <link rel="icon" href="../assets/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.27">
+    
+    
+      
+        <title>API reference - Collectivo</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.6543a935.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+   <link href="../assets/stylesheets/glightbox.min.css" rel="stylesheet"/><style>
+    html.glightbox-open { overflow: initial; height: 100%; }
+    .gslide-title { margin-top: 0px; user-select: text; }
+    .gslide-desc { color: #666; user-select: text; }
+    .gslide-image img { background: white; }
+    .gscrollbar-fixer { padding-right: 15px; }
+    .gdesc-inner { font-size: 0.75rem; }
+    body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color);}
+    body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color);}
+    body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color);}</style> <script src="../assets/javascripts/glightbox.min.js"></script></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="purple">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#api-reference" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Collectivo" class="md-header__button md-logo" aria-label="Collectivo" data-md-component="logo">
+      
+  <img src="../assets/collectivo_rgb_icon_white.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Collectivo
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              API reference
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="purple"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="purple"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3 3.19.09m3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95 2.06.05m-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31Z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/MILA-Wien/collectivo" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    MILA-Wien/collectivo
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Collectivo" class="md-nav__button md-logo" aria-label="Collectivo" data-md-component="logo">
+      
+  <img src="../assets/collectivo_rgb_icon_white.png" alt="logo">
+
+    </a>
+    Collectivo
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/MILA-Wien/collectivo" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    MILA-Wien/collectivo
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Overview
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../configuration/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Installation &amp; configuration
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../development/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Developing extensions
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    API reference
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    API reference
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#frontend" class="md-nav__link">
+    <span class="md-ellipsis">
+      Frontend
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Frontend">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#setcollectivotitle" class="md-nav__link">
+    <span class="md-ellipsis">
+      setCollectivoTitle
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#usedirectus" class="md-nav__link">
+    <span class="md-ellipsis">
+      useDirectus
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#usecollectivouser" class="md-nav__link">
+    <span class="md-ellipsis">
+      useCollectivoUser
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#usecollectivomenus" class="md-nav__link">
+    <span class="md-ellipsis">
+      useCollectivoMenus
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#collectivoformbuilder" class="md-nav__link">
+    <span class="md-ellipsis">
+      CollectivoFormBuilder
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#backend" class="md-nav__link">
+    <span class="md-ellipsis">
+      Backend
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Backend">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#registerextension" class="md-nav__link">
+    <span class="md-ellipsis">
+      registerExtension
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#initschema" class="md-nav__link">
+    <span class="md-ellipsis">
+      initSchema
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#extensionschema" class="md-nav__link">
+    <span class="md-ellipsis">
+      ExtensionSchema
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#extensiondependency" class="md-nav__link">
+    <span class="md-ellipsis">
+      ExtensionDependency
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#directusflowwrapper" class="md-nav__link">
+    <span class="md-ellipsis">
+      DirectusFlowWrapper
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#directusoperationwrapper" class="md-nav__link">
+    <span class="md-ellipsis">
+      DirectusOperationWrapper
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#usedirectusadmin" class="md-nav__link">
+    <span class="md-ellipsis">
+      useDirectusAdmin
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verifycollectivoapitoken" class="md-nav__link">
+    <span class="md-ellipsis">
+      verifyCollectivoApiToken
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#logger" class="md-nav__link">
+    <span class="md-ellipsis">
+      logger
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#frontend" class="md-nav__link">
+    <span class="md-ellipsis">
+      Frontend
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Frontend">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#setcollectivotitle" class="md-nav__link">
+    <span class="md-ellipsis">
+      setCollectivoTitle
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#usedirectus" class="md-nav__link">
+    <span class="md-ellipsis">
+      useDirectus
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#usecollectivouser" class="md-nav__link">
+    <span class="md-ellipsis">
+      useCollectivoUser
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#usecollectivomenus" class="md-nav__link">
+    <span class="md-ellipsis">
+      useCollectivoMenus
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#collectivoformbuilder" class="md-nav__link">
+    <span class="md-ellipsis">
+      CollectivoFormBuilder
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#backend" class="md-nav__link">
+    <span class="md-ellipsis">
+      Backend
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Backend">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#registerextension" class="md-nav__link">
+    <span class="md-ellipsis">
+      registerExtension
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#initschema" class="md-nav__link">
+    <span class="md-ellipsis">
+      initSchema
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#extensionschema" class="md-nav__link">
+    <span class="md-ellipsis">
+      ExtensionSchema
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#extensiondependency" class="md-nav__link">
+    <span class="md-ellipsis">
+      ExtensionDependency
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#directusflowwrapper" class="md-nav__link">
+    <span class="md-ellipsis">
+      DirectusFlowWrapper
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#directusoperationwrapper" class="md-nav__link">
+    <span class="md-ellipsis">
+      DirectusOperationWrapper
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#usedirectusadmin" class="md-nav__link">
+    <span class="md-ellipsis">
+      useDirectusAdmin
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verifycollectivoapitoken" class="md-nav__link">
+    <span class="md-ellipsis">
+      verifyCollectivoApiToken
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#logger" class="md-nav__link">
+    <span class="md-ellipsis">
+      logger
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+<h1 id="api-reference">API reference</h1>
+<h2 id="frontend">Frontend</h2>
+<p>The following <a href="https://nuxt.com/docs/guide/directory-structure/composables">composables</a> are available for frontend development.</p>
+<h3 id="setcollectivotitle"><code>setCollectivoTitle</code></h3>
+<p><code>setCollectivoTitle(title: string)</code></p>
+<p>Use in a page to set a page title for both the visible header and the metadata.</p>
+<h3 id="usedirectus"><code>useDirectus</code></h3>
+<p><code>useDirectus(): DirectusClient</code></p>
+<p>Access the <a href="https://docs.directus.io/guides/sdk/getting-started.html">directus client</a> to interact with the database.</p>
+<h3 id="usecollectivouser"><code>useCollectivoUser</code></h3>
+<p><code>useCollectivoUser(): UserStore</code></p>
+<p>Store for data of the currently authenticated user, with the following attributes:</p>
+<ul>
+<li><code>data: CollectivoUser | null</code></li>
+<li><code>inputs: CollectivoUserInput[]</code> -&gt; Can be used to add fields to the profile section</li>
+<li><code>isAuthenticated: boolean</code></li>
+<li><code>saving: boolean</code></li>
+<li><code>loading: boolean</code></li>
+<li><code>error: unknown</code></li>
+<li><code>load: (force: boolean = false) =&gt; Promise&lt;UserStore&gt;</code> -&gt; Fetch user data</li>
+<li><code>save: (data: CollectivoUser) =&gt; Promise&lt;UserStore&gt;</code> -&gt; Update user data</li>
+</ul>
+<h3 id="usecollectivomenus"><code>useCollectivoMenus</code></h3>
+<p><code>useCollectivoMenus(): Ref&lt;CollectivoMenus&gt;</code></p>
+<p>This composable can be used to add or adapt menu items.</p>
+<p>There are four menus in <code>CollectivoMenus</code>:</p>
+<ul>
+<li><code>main</code>: Left sidebar, shown for authenticated users.</li>
+<li><code>main_public</code>: Left sidebar, shown for public users.</li>
+<li><code>profile</code>: Top right profile icon, shown for authenticated users.</li>
+<li><code>profile_public</code>: Top right profile icon, shown for public users.</li>
+</ul>
+<p>Attributes:</p>
+<ul>
+<li><code>label: string</code> - Will be shown next to the icon.</li>
+<li><code>icon: string</code> - Icon to be used (see <a href="#icons">icons</a>)</li>
+<li><code>to: string</code> - A path like <code>/my/path</code> or <code>https://externallink.com</code></li>
+<li><code>external: boolan</code> - If true, path will be interepreted as an external URL.</li>
+<li><code>hideOnMobile: boolean</code> - If true, item will not be shown on small screens.</li>
+<li><code>target: string</code> - Target attribute of the link.</li>
+<li><code>click: Function</code> - Click attribute of the link.</li>
+<li><code>filter: (item: CollectivoMenuItem) =&gt; boolean</code> - Show item only if this function returns <code>true</code>.</li>
+</ul>
+<h3 id="collectivoformbuilder"><code>CollectivoFormBuilder</code></h3>
+<p>This component can be used to build forms.</p>
+<p>Attributes:</p>
+<ul>
+<li><code>data: Record&lt;string, any&gt;</code>: Data to populate the initial form</li>
+<li><code>fields: CollectivoFormField[]</code>: Defines the structure of the form</li>
+<li><code>submit: (data: Record&lt;string, any&gt;) =&gt; Promise&lt;void&gt;</code>: Function to be called when form is submitted</li>
+<li><code>submit-label: string</code>: Label of the submit button</li>
+</ul>
+<p>To see the different possible form fields, check out the available types of <code>CollectivoFormField</code> in <code>index.d.ts</code>.</p>
+<h2 id="backend">Backend</h2>
+<p>The following utility functions can be used for server-side scripts (within <code>/my-extension/server/</code>)</p>
+<h3 id="registerextension"><code>registerExtension</code></h3>
+<p><code>registerExtension({name: string, description:string, version:string, schemas:ExtensionSchema[], examples: ()=&gt;Promise&lt;void&gt;})</code></p>
+<p>Registers a function within the runtime of the backend server, being able to multiple schemas for different versions of the extension as well as a function to create example data.</p>
+<h3 id="initschema"><code>initSchema</code></h3>
+<p><code>initSchema(extension: string, version: string, options: ExtensionSchemaOptions): ExtensionSchema</code></p>
+<p>Initiates a new <a href="#extensionschema">ExtensionSchema</a> that can be used to define the database structure and migrations of your extension (see <a href="../development/#migrations">migrations</a>). Can be applied as follows and added to <a href="#registerextension"><code>registerExtension</code></a>.</p>
+<h3 id="extensionschema"><code>ExtensionSchema</code></h3>
+<p>This class has the following attributes:</p>
+<ul>
+<li><code>extension</code>: String. Name of the extension.</li>
+<li><code>version</code>: String. The <a href="https://semver.org/">semantic version</a> of the extension that this schema represents.</li>
+<li><code>dependencies</code>: Array of <a href=""><code>ExtensionDependency</code></a>.</li>
+<li><code>run_before</code>: Async function. Custom migration script to be run before applying this schema version</li>
+<li><code>run_after</code>: Async function. Custom migration script to be run after applying this schema version</li>
+<li><code>collections</code>: Array of <a href="https://docs.directus.io/reference/system/collections.html"><code>DirectusCollection</code></a>.</li>
+<li><code>fields</code>: Array of <a href="https://docs.directus.io/reference/system/fields.html"><code>DirectusField</code></a>.</li>
+<li><code>relations</code>: Array of <a href="https://docs.directus.io/reference/system/relations.html"><code>DirectusRelation</code></a>. See also the methods below.</li>
+<li><code>roles</code>: Array of <a href="https://docs.directus.io/reference/system/roles.html"><code>DirectusRole</code></a>.</li>
+<li><code>permissions</code>: Array of <a href="https://docs.directus.io/reference/system/permissions.html"><code>DirectusPermission</code></a>.</li>
+<li><code>flows</code>: Array of <a href="#directusflowwrapper"><code>DirectusFlowWrapper</code></a>. Define automated workflows.</li>
+<li><code>translations</code>: Array of <a href="https://docs.directus.io/reference/system/translations.html"><code>DirectusTranslation</code></a></li>
+</ul>
+<p>And the following methods:</p>
+<ul>
+<li><code>createO2MRelation()</code> - Utility method to create a <a href="https://docs.directus.io/app/data-model/relationships.html#one-to-many-o2m">One-to-Many</a> relationship</li>
+<li><code>createM2MRelation()</code> - Utility method to create a <a href="https://docs.directus.io/app/data-model/relationships.html#many-to-many-m2m">Many-to_many</a> relationship</li>
+<li><code>createM2ARelation()</code> - Utility method to create a <a href="https://docs.directus.io/app/data-model/relationships.html#many-to-any-m2a">Many-to-Any</a> relationship</li>
+<li><code>createNuxtHook()</code> - Utility method to create a flow that will send a post request to a Nuxt API endpoint when it is triggered.</li>
+</ul>
+<h3 id="extensiondependency"><code>ExtensionDependency</code></h3>
+<p>This type can be used to define dependencies of a schema on another extension.</p>
+<p>Attributes:</p>
+<ul>
+<li><code>extension</code>: String. The extension that the schema depends on.</li>
+<li><code>version</code>: String. The <a href="https://semver.org/">semantic version</a> of the extension that the schema depends on.</li>
+</ul>
+<h3 id="directusflowwrapper"><code>DirectusFlowWrapper</code></h3>
+<p>This type can be used to construct directus flows in a schema.</p>
+<p>Attributes:</p>
+<ul>
+<li><code>flow: Partial&lt;DirectusFlow&lt;&lt;any&gt;&gt;</code> - this will define the trigger, see <a href="https://docs.directus.io/reference/system/flows.html">directus flow</a></li>
+<li><code>firstOperation: string</code> - key of the initial operation to be performed</li>
+<li><code>operations: DirectusOperationWrapper[]</code> - define a list of connected operations</li>
+</ul>
+<h3 id="directusoperationwrapper"><code>DirectusOperationWrapper</code></h3>
+<p>This type can be used to define operations within <a href="#directusflowwrapper">DirectusFlowWrapper</a>.</p>
+<p>Attributes:</p>
+<ul>
+<li><code>operation: Partial&lt;DirectusOperation&lt;&lt;any&gt;&gt;</code> - see <a href="https://docs.directus.io/reference/system/operations.html">directus operation</a></li>
+<li><code>resolve: string</code> - key of the operation to execute when this one is resolved</li>
+<li><code>reject: string</code> - key of the operation to execute when this one is rejected</li>
+</ul>
+<h3 id="usedirectusadmin"><code>useDirectusAdmin</code></h3>
+<p><code>useDirectusAdmin(): DirectusClient</code></p>
+<p>Access the <a href="https://docs.directus.io/guides/sdk/getting-started.html">directus client</a> with admin access.</p>
+<h3 id="verifycollectivoapitoken"><code>verifyCollectivoApiToken</code></h3>
+<p>Function to protect API endpoints. Requests need to attach the API token from <code>.env</code> in the authorization header.</p>
+<h3 id="logger"><code>logger</code></h3>
+<p>You can use winston to write information to the nuxt logs (<code>console.log</code> will not appear in production), e.g.:</p>
+<div class="language-ts highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nx">logger</span><span class="p">.</span><span class="nx">info</span><span class="p">(</span><span class="s2">&quot;Hello world!&quot;</span><span class="p">);</span>
+</span></code></pre></div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "..", "features": ["content.code.copy", "navigation.sections"], "search": "../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.ad660dcc.min.js"></script>
+      
+    
+  <script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(() => { lightbox.reload() });
+</script></body>
+</html>
