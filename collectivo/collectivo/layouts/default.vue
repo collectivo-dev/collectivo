@@ -3,10 +3,12 @@ import Sidebar from "./components/Sidebar.vue";
 import MobileHeader from "./components/MobileHeader.vue";
 import MobileMenu from "./components/MobileMenu.vue";
 import ProfileMenu from "./components/ProfileMenu.vue";
+import { useCollectivoBackLink } from "~/composables/page";
 
 const { t } = useI18n();
 const config = useAppConfig();
 const pageTitle = useCollectivoTitle();
+const backLink = useCollectivoBackLink();
 const sidebarWidthMd = String(config.collectivo.sidebarWidth + 65) + "px";
 const sidebarWidthLg = String(config.collectivo.sidebarWidth + 90) + "px";
 </script>
@@ -67,7 +69,11 @@ const sidebarWidthLg = String(config.collectivo.sidebarWidth + 90) + "px";
     <div class="main">
       <div class="main__top">
         <div class="main__top__left">
-          <h1>
+          <h1 class="flex flex-wrap align-middle items-center gap-3">
+            <NuxtLink v-if="backLink" :to="backLink" class="flex items-center">
+              <UIcon name="i-heroicons-arrow-left-circle-16-solid" />
+            </NuxtLink>
+
             {{ t(pageTitle) }}
           </h1>
         </div>

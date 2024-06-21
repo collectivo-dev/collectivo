@@ -2,6 +2,21 @@ const schema = initSchema("memberships", "0.0.1");
 
 export default schema;
 
+export enum MembershipStatus {
+  DRAFT = "draft",
+  APPLIED = "applied",
+  APPROVED = "approved",
+  IN_CANCELLATION = "in-cancellation",
+  IN_EXCLUSION = "in-exclusion",
+  ENDED = "ended",
+}
+
+export const ACTIVE_MEMBERSHIP_STATUSES = [
+  MembershipStatus.APPROVED,
+  MembershipStatus.IN_CANCELLATION,
+  MembershipStatus.IN_EXCLUSION,
+];
+
 schema.dependencies = [
   { extension: "collectivo", version: "0.0.1" },
   { extension: "payments", version: "0.0.1" },
@@ -51,31 +66,31 @@ schema.fields = [
         choices: [
           {
             text: "$t:approved",
-            value: "approved",
+            value: MembershipStatus.APPROVED,
             foreground: "#FFFFFF",
             background: "#2CB3A5",
           },
           {
             text: "$t:applied",
-            value: "applied",
+            value: MembershipStatus.APPLIED,
             foreground: "#FFFFFF",
             background: "#aa4abc",
           },
           {
             text: "$t:in-cancellation",
-            value: "in-cancellation",
+            value: MembershipStatus.IN_CANCELLATION,
             foreground: "#FFFFFF",
             background: "#d94c4c",
           },
           {
             text: "$t:in-exclusion",
-            value: "in-exclusion",
+            value: MembershipStatus.IN_EXCLUSION,
             foreground: "#FFFFFF",
             background: "#d94c4c",
           },
           {
             text: "$t:ended",
-            value: "ended",
+            value: MembershipStatus.ENDED,
             foreground: "#FFFFFF",
             background: "#d94c4c",
           },
@@ -85,16 +100,19 @@ schema.fields = [
       note: "$t:memberships-status-note",
       options: {
         choices: [
-          { text: "$t:draft", value: "draft" },
-          { text: "$t:applied", value: "applied" },
-          { text: "$t:approved", value: "approved" },
-          { text: "$t:in-cancellation", value: "in-cancellation" },
-          { text: "$t:in-exclusion", value: "in-exclusion" },
-          { text: "$t:ended", value: "ended" },
+          { text: "$t:draft", value: MembershipStatus.DRAFT },
+          { text: "$t:applied", value: MembershipStatus.APPLIED },
+          { text: "$t:approved", value: MembershipStatus.APPROVED },
+          {
+            text: "$t:in-cancellation",
+            value: MembershipStatus.IN_CANCELLATION,
+          },
+          { text: "$t:in-exclusion", value: MembershipStatus.IN_EXCLUSION },
+          { text: "$t:ended", value: MembershipStatus.ENDED },
         ],
       },
     },
-    schema: { is_nullable: false, default_value: "draft" },
+    schema: { is_nullable: false, default_value: MembershipStatus.DRAFT },
   },
   {
     collection: "memberships",
@@ -368,33 +386,33 @@ schema.permissions.push({
 // ----------------------------------------------------------------------------
 
 schema.translations = [
-  { language: "de-DE", key: "applied", value: "Beworben" },
-  { language: "de-DE", key: "approved", value: "Aufgenommen" },
+  { language: "de-DE", key: MembershipStatus.APPLIED, value: "Beworben" },
+  { language: "de-DE", key: MembershipStatus.APPROVED, value: "Aufgenommen" },
   {
     language: "de-DE",
-    key: "in-cancellation",
+    key: MembershipStatus.IN_CANCELLATION,
     value: "Im Ausstieg",
   },
   {
     language: "de-DE",
-    key: "in-exclusion",
+    key: MembershipStatus.IN_EXCLUSION,
     value: "Im Ausschluss",
   },
-  { language: "de-DE", key: "ended", value: "Beendet" },
+  { language: "de-DE", key: MembershipStatus.ENDED, value: "Beendet" },
 
-  { language: "en-US", key: "applied", value: "Applied" },
-  { language: "en-US", key: "approved", value: "Approved" },
+  { language: "en-US", key: MembershipStatus.APPLIED, value: "Applied" },
+  { language: "en-US", key: MembershipStatus.APPROVED, value: "Approved" },
   {
     language: "en-US",
-    key: "in-cancellation",
+    key: MembershipStatus.IN_CANCELLATION,
     value: "In cancellation",
   },
   {
     language: "en-US",
-    key: "in-exclusion",
+    key: MembershipStatus.IN_EXCLUSION,
     value: "In exclusion",
   },
-  { language: "en-US", key: "ended", value: "Ended" },
+  { language: "en-US", key: MembershipStatus.ENDED, value: "Ended" },
 
   {
     language: "de-DE",

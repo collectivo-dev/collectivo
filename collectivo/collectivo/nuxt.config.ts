@@ -23,6 +23,8 @@ export default defineNuxtConfig({
     public: {
       debug: false,
       collectivoUrl: process.env.COLLECTIVO_URL || "http://localhost:3000",
+      collectivoContactEmail:
+        process.env.COLLECTIVO_CONTACT_EMAIL || "info@example.com",
       authService: process.env.COLLECTIVO_AUTH_SERVICE || "keycloak",
       keycloakUrl: process.env.KEYCLOAK_URL || "http://keycloak:8080",
       keycloakRealm: process.env.KEYCLOAK_REALM || "collectivo",

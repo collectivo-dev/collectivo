@@ -1,4 +1,5 @@
 import { createItem, deleteItems, readUsers } from "@directus/sdk";
+import { MembershipStatus } from "@collectivo/memberships/server/schemas/memberships_01";
 
 export default async function examples() {
   console.info("Creating example data for memberships");
@@ -12,11 +13,11 @@ export default async function examples() {
   console.info("Creating memberships");
 
   const users = [
-    ["Alice", "applied"],
-    ["Bob", "approved"],
-    ["Charlie", "approved"],
-    ["Dave", "in-cancellation"],
-    ["User", "approved"],
+    ["Alice", MembershipStatus.APPLIED, null],
+    ["Bob", MembershipStatus.APPROVED, new Date(2023, 1, 5)],
+    ["Charlie", MembershipStatus.APPROVED, new Date(2023, 6, 12)],
+    ["Dave", MembershipStatus.IN_CANCELLATION, new Date(2024, 1, 2)],
+    ["User", MembershipStatus.APPROVED, new Date(2024, 3, 6)],
   ];
 
   for (const user of users) {
@@ -26,12 +27,12 @@ export default async function examples() {
     )[0];
 
     // Create membership
-
     await directus.request(
       createItem("memberships", {
         memberships_user: user_id,
         memberships_type: "normal",
         memberships_status: user[1],
+        memberships_date_approved: user[2],
       }),
     );
   }

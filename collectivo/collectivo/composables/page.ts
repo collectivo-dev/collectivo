@@ -1,9 +1,19 @@
 export const useCollectivoTitle = () =>
   useState<string>("collectivoTitle", () => "");
 
-export const setCollectivoTitle = (title: string) => {
-  useCollectivoTitle().value = title;
+export const useCollectivoBackLink = () =>
+  useState<string | undefined>("collectivoBackLink", () => "");
 
+interface CollectivoTitleOptions {
+  backLink?: string;
+}
+
+export const setCollectivoTitle = (
+  title: string,
+  options?: CollectivoTitleOptions,
+) => {
+  useCollectivoTitle().value = title;
+  useCollectivoBackLink().value = options?.backLink;
   useHead({
     title: title + " - " + useAppConfig().collectivo.projectName,
   });
